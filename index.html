@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AL-IRSHAAD | Research & Development</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23256ce8'/%3E%3Ctext x='50' y='57' text-anchor='middle' font-family='IBM Plex Sans, sans-serif' font-size='38' fill='%23fff'%3ERD%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#256ce8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #e2e8f0;
+  --bg: #070b18;
+  --surface: #0f172a;
+  --surface-soft: #111b2b;
+  --surface-strong: #1e293b;
+  --border: rgba(148,163,184,0.18);
+  --border-dark: rgba(148,163,184,0.26);
+  --parchment: rgba(148,163,184,0.12);
+  --primary: #2563eb;
+  --primary-soft: #1d4ed8;
+  --accent: #0ea5e9;
+  --accent-soft: #38bdf8;
+  --danger: #f43f5e;
+  --muted: #94a3b8;
+  --shadow: rgba(15,23,42,0.48);
+  --sidebar-w: 280px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; }
+body { display: flex; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--parchment); }
+::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 3px; }
+
+/* SIDEBAR */
+#sidebar {
+  width: var(--sidebar-w); min-height: 100vh; background: linear-gradient(180deg, #090f1f 0%, #111827 100%);
+  display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+  overflow-y: auto; box-shadow: 6px 0 40px rgba(15,23,42,0.16);
+  transition: transform 0.3s ease;
+}
+#sidebar-brand {
+  display: flex; align-items: center; gap: 14px; padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(148,163,184,0.12);
+}
+#sidebar-brand .brand-mark {
+  width: 48px; height: 48px; border-radius: 16px; background: rgba(37,99,235,0.18);
+  display: grid; place-items: center; color: #93c5fd; font-weight: 900; font-size: 20px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+#sidebar-brand .school-name {
+  font-family: 'Amiri', serif; color: #f8fafc; font-size: 20px; font-weight: 700; line-height: 1.1;
+}
+#sidebar-brand .school-sub {
+  font-family: 'IBM Plex Mono', monospace; color: rgba(203,213,225,0.75); font-size: 10px; letter-spacing: 1.8px; margin-top: 4px; text-transform: uppercase;
+}
+#sidebar-user {
+  margin: 18px 24px 24px;
+  padding: 18px 18px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  display: flex; align-items: center; gap: 14px;
+}
+#sidebar-user .user-avatar {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  display: grid; place-items: center; color: white; font-weight: 700;
+}
+#sidebar-user .user-meta {
+  display: grid; gap: 4px;
+}
+#sidebar-user .user-name {
+  color: #f8fafc; font-size: 14px; font-weight: 700;
+}
+#sidebar-user .user-role {
+  color: rgba(203,213,225,0.8); font-size: 12px; letter-spacing: 0.03em;
+}
+.nav-section { padding: 8px 0 4px; }
+.nav-section-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.8px;
+  color: rgba(203,213,225,0.55); text-transform: uppercase; padding: 0 24px 12px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 14px 24px;
+  color: rgba(226,232,240,0.92); cursor: pointer; transition: all 0.2s ease;
+  font-size: 13px; font-weight: 500; border-left: 3px solid transparent;
+  border-radius: 14px; margin: 0 18px 6px; background: transparent;
+}
+.nav-item:hover {
+  color: #fff; background: rgba(255,255,255,0.08); transform: translateX(2px);
+}
+.nav-item.active {
+  color: #fff; background: rgba(37,99,235,0.22); border-left-color: #60a5fa;
+  box-shadow: 0 12px 24px rgba(37,99,235,0.12);
+}
+.nav-item .icon {
+  width: 22px; height: 22px; position: relative; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center; color: rgba(148,163,184,0.92);
+}
+.nav-item .icon::before,
+.nav-item .icon::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+  border-radius: 3px;
+}
+.icon-dashboard::before {
+  width: 10px; height: 10px; top: 4px; left: 4px;
+  box-shadow: 0 8px 0 0 currentColor, 8px 0 0 0 currentColor;
+}
+.icon-students::before {
+  width: 8px; height: 8px; border-radius: 50%; top: 3px; left: 3px;
+}
+.icon-students::after {
+  width: 10px; height: 4px; top: 13px; left: 6px;
+}
+.icon-teachers::before {
+  width: 10px; height: 10px; border-radius: 50%; top: 2px; left: 6px;
+}
+.icon-teachers::after {
+  width: 8px; height: 4px; top: 14px; left: 7px;
+}
+.icon-classes::before {
+  width: 14px; height: 10px; top: 5px; left: 4px; border-radius: 3px;
+}
+.icon-classes::after {
+  width: 6px; height: 6px; top: 12px; left: 10px; border-radius: 2px;
+}
+.icon-subjects::before {
+  width: 14px; height: 10px; top: 4px; left: 4px; border-radius: 3px;
+}
+.icon-subjects::after {
+  width: 10px; height: 4px; top: 12px; left: 5px; border-radius: 2px;
+}
+.icon-timetable::before {
+  width: 14px; height: 14px; top: 4px; left: 4px; border-radius: 4px;
+}
+.icon-timetable::after {
+  width: 4px; height: 4px; top: 6px; left: 6px; box-shadow: 4px 0 0 0 currentColor, 0 4px 0 0 currentColor, 4px 4px 0 0 currentColor;
+  border-radius: 50%; background: currentColor;
+}
+.icon-attendance::before {
+  width: 14px; height: 10px; top: 6px; left: 4px; border-radius: 3px;
+}
+.icon-attendance::after {
+  width: 6px; height: 10px; top: 7px; left: 8px; transform: rotate(45deg); border-radius: 2px;
+}
+.icon-exams::before {
+  width: 12px; height: 14px; top: 4px; left: 5px; border-radius: 3px;
+}
+.icon-exams::after {
+  width: 8px; height: 2px; top: 6px; left: 7px;
+  box-shadow: 0 4px 0 0 currentColor, 0 8px 0 0 currentColor;
+}
+.icon-fees::before {
+  width: 14px; height: 10px; top: 6px; left: 4px; border-radius: 6px;
+}
+.icon-fees::after {
+  width: 4px; height: 4px; top: 4px; left: 8px; border-radius: 50%;
+}
+.icon-library::before {
+  width: 14px; height: 12px; top: 4px; left: 4px; border-radius: 3px;
+}
+.icon-library::after {
+  width: 10px; height: 2px; top: 8px; left: 6px;
+  box-shadow: 0 3px 0 0 currentColor, 0 6px 0 0 currentColor;
+}
+.icon-bus::before {
+  width: 16px; height: 10px; top: 5px; left: 3px; border-radius: 4px;
+}
+.icon-bus::after {
+  width: 4px; height: 4px; top: 13px; left: 5px; box-shadow: 8px 0 0 0 currentColor;
+  border-radius: 50%;
+}
+.icon-reports::before {
+  width: 12px; height: 14px; top: 3px; left: 5px; border-radius: 3px;
+}
+.icon-reports::after {
+  width: 8px; height: 2px; top: 6px; left: 7px;
+  box-shadow: 0 4px 0 0 currentColor, 0 8px 0 0 currentColor;
+}
+.topbar-button {
+  width: 42px; height: 42px; border: 1px solid rgba(148,163,184,0.16);
+  background: rgba(255,255,255,0.03); border-radius: 14px; display: inline-flex;
+  align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease;
+  color: var(--ink);
+}
+.topbar-button:hover { transform: translateY(-1px); background: rgba(255,255,255,0.08); }
+.toggle-icon {
+  width: 18px; height: 2px; background: currentColor; position: relative; display: inline-block;
+}
+.toggle-icon::before,
+.toggle-icon::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 2px; background: currentColor;
+  left: 0;
+}
+.toggle-icon::before { top: -6px; }
+.toggle-icon::after { top: 6px; }
+
+.nav-item .label {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#sidebar-footer {
+  margin-top: auto; padding: 22px 24px 28px;
+}
+#logout-btn {
+  width: 100%; background: linear-gradient(135deg, rgba(37,99,235,0.95), rgba(14,165,233,0.85));
+  color: white; border: none; padding: 14px 16px; border-radius: 14px;
+  cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
+  display: flex; align-items: center; gap: 10px; justify-content: center; transition: all 0.2s ease;
+}
+#logout-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 40px rgba(37,99,235,0.16); }
+
+/* MAIN CONTENT */
+#main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; transition: margin-left 0.3s ease; }
+#topbar {
+  background: rgba(15,23,42,0.9); border-bottom: 1px solid rgba(148,163,184,0.1);
+  padding: 0 28px; height: 64px; display: flex; align-items: center;
+  justify-content: space-between; position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px);
+}
+#topbar-title { font-family: 'Amiri', serif; font-size: 22px; color: #e2e8f0; letter-spacing: 0.02em; }
+#topbar-right { display: flex; align-items: center; gap: 18px; }
+body.sidebar-hidden #sidebar { transform: translateX(-110%); }
+body.sidebar-hidden #main { margin-left: 0; }
+body.sidebar-hidden #topbar { padding-left: 28px; }
+.topbar-badge {
+  background: var(--surface-soft); border: 1px solid rgba(148,163,184,0.14);
+  border-radius: 999px; padding: 6px 14px; font-size: 12px; color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+}
+#content { padding: 30px; flex: 1; }
+
+/* AUTH SCREENS */
+#auth-overlay {
+  position: fixed; inset: 0; background: linear-gradient(135deg, rgba(15,23,42,0.98) 0%, rgba(30,41,59,0.95) 100%); z-index: 1000;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.auth-box {
+  width: min(100%, 520px); background: rgba(15,23,42,0.96); border: 1px solid rgba(148,163,184,0.14);
+  border-radius: 28px; padding: 36px 34px; box-shadow: 0 35px 90px rgba(15,23,42,0.32);
+  text-align: left; position: relative; overflow: hidden;
+}
+.auth-box::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at top right, rgba(37,99,235,0.16), transparent 34%),
+              radial-gradient(circle at bottom left, rgba(16,185,129,0.12), transparent 28%);
+  pointer-events: none;
+}
+.auth-box > * { position: relative; }
+.auth-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.auth-logo { display: inline-flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 18px; background: rgba(37,99,235,0.18); color: #93c5fd; font-size: 22px; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+.auth-title-group { display: grid; gap: 6px; }
+.auth-title { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: #f8fafc; }
+.auth-subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.8px; color: #94a3b8; text-transform: uppercase; }
+.auth-form-title { font-size: 20px; font-weight: 700; margin-bottom: 18px; color: #e2e8f0; }
+.auth-description { color: #cbd5e1; font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+.form-group { margin-bottom: 18px; text-align: left; }
+.form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 14px 16px; border: 1px solid rgba(148,163,184,0.2);
+  border-radius: 14px; background: rgba(15,23,42,0.85); color: #f8fafc;
+  font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.form-group input:hover, .form-group textarea:hover { transform: translateY(-1px); }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: rgba(37,99,235,0.7); box-shadow: 0 0 0 6px rgba(37,99,235,0.12);
+}
+.form-group textarea { resize: vertical; min-height: 90px; }
+.btn-primary {
+  width: 100%; background: linear-gradient(135deg, #2563eb, #0ea5e9); color: white; border: none;
+  padding: 15px 24px; border-radius: 14px; font-size: 15px; font-weight: 700;
+  box-shadow: 0 18px 40px rgba(37,99,235,0.22); cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s; font-family: 'IBM Plex Sans', sans-serif;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 22px 50px rgba(37,99,235,0.28); background: linear-gradient(135deg, #1d4ed8, #38bdf8); }
+.auth-note { color: #94a3b8; font-size: 13px; margin-top: 18px; }
+.auth-note strong { color: #e2e8f0; }
+.auth-error { color: #fb7185; font-size: 13px; margin-top: 14px; min-height: 18px; }
+.btn-primary {
+  width: 100%; background: var(--primary); color: white; border: none;
+  padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700;
+  box-shadow: 0 14px 30px rgba(37,99,235,0.12);
+  cursor: pointer; transition: background 0.15s; font-family: 'IBM Plex Sans', sans-serif;
+}
+.btn-primary:hover { background: var(--teal-light); }
+.btn-secondary {
+  background: var(--surface-soft); color: #e2e8f0; border: 1px solid rgba(148,163,184,0.16);
+  padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s; font-family: 'IBM Plex Sans', sans-serif;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.06); }
+.btn-danger {
+  background: var(--rose); color: white; border: none;
+  padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: background 0.15s; font-family: 'IBM Plex Sans', sans-serif;
+}
+.btn-danger:hover { background: var(--rose-light); }
+.btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+.btn-gold {
+  background: var(--gold); color: white; border: none;
+  padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s; font-family: 'IBM Plex Sans', sans-serif;
+}
+.btn-gold:hover { background: var(--gold-dark); }
+.auth-error { color: var(--rose); font-size: 12px; margin-top: 8px; min-height: 16px; }
+
+/* DASHBOARD */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--surface); border: 1px solid rgba(148,163,184,0.16); border-radius: 12px;
+  padding: 20px; position: relative; overflow: hidden; transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: 0 6px 30px rgba(15,23,42,0.24); }
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat-card.teal::before { background: var(--teal); }
+.stat-card.gold::before { background: var(--gold); }
+.stat-card.rose::before { background: var(--rose); }
+.stat-card.green::before { background: #2d8a4e; }
+.stat-card.purple::before { background: #7c4dbe; }
+.stat-card.orange::before { background: #d4602a; }
+.stat-number { font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: 600; color: var(--ink); line-height: 1; }
+.stat-label { font-size: 12px; color: #666; margin-top: 4px; }
+.stat-icon { font-size: 28px; position: absolute; top: 16px; right: 16px; opacity: 0.15; }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media(max-width: 800px) { .dash-grid { grid-template-columns: 1fr; } }
+.dash-card {
+  background: var(--surface); border: 1px solid rgba(148,163,184,0.16); border-radius: 12px;
+  overflow: hidden;
+}
+.dash-card-header {
+  padding: 16px 20px; border-bottom: 1px solid rgba(148,163,184,0.12);
+  font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; color: #e2e8f0;
+}
+.dash-card-body { padding: 0; }
+.dash-list-item {
+  padding: 12px 20px; border-bottom: 1px solid rgba(148,163,184,0.08);
+  display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #cbd5e1;
+}
+.dash-list-item:last-child { border-bottom: none; }
+.empty-state { padding: 32px; text-align: center; color: #94a3b8; font-size: 13px; }
+
+/* MODULE LAYOUT */
+.module-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.module-title { font-family: 'Amiri', serif; font-size: 26px; color: var(--ink); }
+.module-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.search-bar {
+  display: flex; align-items: center; gap: 0;
+}
+.search-bar input {
+  border: 1px solid rgba(148,163,184,0.22); border-right: none;
+  padding: 8px 14px; border-radius: 8px 0 0 8px; background: var(--surface);
+  color: #e2e8f0; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; width: 220px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.search-bar input:focus { outline: none; border-color: var(--primary); background: var(--surface-soft); }
+.search-bar button {
+  background: var(--teal); color: white; border: 1px solid var(--teal);
+  padding: 8px 12px; border-radius: 0 8px 8px 0; cursor: pointer; font-size: 14px;
+}
+
+/* TABLE */
+.table-wrap { background: var(--surface); border: 1px solid rgba(148,163,184,0.16); border-radius: 12px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background: #0f172a; color: rgba(255,255,255,0.85); padding: 12px 16px;
+  text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; font-family: 'IBM Plex Mono', monospace;
+}
+tbody tr { border-bottom: 1px solid rgba(148,163,184,0.08); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.04); }
+tbody td { padding: 12px 16px; font-size: 13px; vertical-align: middle; color: #e2e8f0; }
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.badge-green { background: #e6f4ea; color: #2d6a4f; }
+.badge-red { background: var(--rose-pale); color: var(--rose); }
+.badge-yellow { background: #fef9e7; color: #8a6d2a; }
+.badge-blue { background: var(--teal-pale); color: var(--teal); }
+.badge-gray { background: #f0f0f0; color: #666; }
+.action-btns { display: flex; gap: 6px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(26,18,8,0.6); z-index: 500;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  backdrop-filter: blur(3px);
+}
+.modal {
+  background: var(--surface); border-radius: 16px; box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+  width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+  animation: modalIn 0.2s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.modal-lg { max-width: 800px; }
+.modal-header {
+  padding: 20px 24px 16px; border-bottom: 1px solid rgba(148,163,184,0.14);
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface); z-index: 1;
+}
+.modal-title { font-family: 'Amiri', serif; font-size: 22px; color: #e2e8f0; }
+.modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #94a3b8; line-height: 1; padding: 4px 8px; border-radius: 6px; transition: background 0.1s; }
+.modal-close:hover { background: rgba(255,255,255,0.06); color: #f8fafc; }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-section-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-dark); margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: white;
+  padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 9999;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3); animation: toastIn 0.2s ease;
+  display: flex; align-items: center; gap: 10px;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; } }
+.toast.success { border-left: 4px solid #2d8a4e; }
+.toast.error { border-left: 4px solid var(--rose); }
+
+/* TIMETABLE GRID */
+.tt-grid { display: grid; background: var(--surface); border: 1px solid rgba(148,163,184,0.16); border-radius: 12px; overflow: hidden; }
+.tt-header-row { display: flex; background: #0f172a; }
+.tt-header-cell { flex: 1; padding: 12px 8px; text-align: center; color: rgba(255,255,255,0.8); font-size: 11px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,0.08); }
+.tt-header-cell:last-child { border-right: none; }
+.tt-header-cell.day-header { flex: 0 0 80px; }
+.tt-row { display: flex; border-top: 1px solid rgba(148,163,184,0.08); }
+.tt-row:hover { background: rgba(255,255,255,0.04); }
+.tt-period-cell { flex: 0 0 80px; padding: 10px 8px; font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #cbd5e1; text-align: center; background: rgba(255,255,255,0.04); border-right: 1px solid rgba(148,163,184,0.08); display: flex; align-items: center; justify-content: center; }
+.tt-cell { flex: 1; padding: 8px; border-right: 1px solid rgba(148,163,184,0.08); min-height: 64px; cursor: pointer; transition: background 0.1s; display: flex; align-items: center; justify-content: center; }
+.tt-cell:last-child { border-right: none; }
+.tt-cell:hover { background: rgba(14,165,233,0.08); }
+.tt-slot { background: var(--teal); color: white; border-radius: 6px; padding: 6px 8px; font-size: 11px; text-align: center; width: 100%; }
+.tt-slot .subj { font-weight: 600; }
+.tt-slot .tchr { opacity: 0.8; font-size: 10px; }
+
+/* FEE STATUS BARS */
+.fee-bar-wrap { height: 6px; background: var(--parchment); border-radius: 3px; overflow: hidden; }
+.fee-bar-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.4s; }
+
+/* PRINT */
+@media print {
+  #sidebar, #topbar, .no-print { display: none !important; }
+  #main { margin-left: 0 !important; }
+  #content { padding: 0 !important; }
+  .table-wrap { border: none; }
+  thead th { background: #333 !important; -webkit-print-color-adjust: exact; }
+}
+
+/* MISC */
+.pill-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.pill { padding: 5px 14px; border-radius: 20px; border: 1px solid rgba(148,163,184,0.16); background: var(--surface-soft); color: #e2e8f0; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+.alert { padding: 12px 16px; border-radius: 12px; font-size: 13px; margin-bottom: 16px; color: #e2e8f0; }
+.alert-info { background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.3); color: #7dd3fc; }
+.alert-warn { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.info-item label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #94a3b8; display: block; margin-bottom: 3px; }
+.info-item span { font-size: 14px; color: #e2e8f0; }
+.section-card { background: var(--surface); border: 1px solid rgba(148,163,184,0.16); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.section-card-title { font-weight: 600; margin-bottom: 14px; font-size: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(148,163,184,0.12); display: flex; align-items: center; gap: 8px; color: #e2e8f0; }
+.chart-bar-wrap { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+.chart-bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.chart-bar { background: var(--teal); border-radius: 4px 4px 0 0; width: 100%; transition: height 0.4s; min-height: 4px; }
+.chart-bar-label { font-size: 10px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px; }
+.chart-bar-val { font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: var(--teal); }
+
+/* RECEIPT PRINT */
+.receipt { font-family: 'IBM Plex Mono', monospace; max-width: 400px; margin: 0 auto; }
+.receipt-header { text-align: center; margin-bottom: 16px; border-bottom: 2px dashed var(--border-dark); padding-bottom: 16px; }
+.receipt-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
+.receipt-total { border-top: 2px dashed var(--border-dark); margin-top: 8px; padding-top: 8px; font-weight: 700; }
+
+/* REPORT CARD */
+.report-card { max-width: 700px; margin: 0 auto; background: var(--surface); padding: 32px; border: 2px solid rgba(148,163,184,0.16); }
+.rc-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 2px solid rgba(226,232,240,0.08); padding-bottom: 16px; }
+.rc-logo { font-family: 'Amiri', serif; font-size: 40px; color: #fbbf24; }
+.rc-school-info h1 { font-family: 'Amiri', serif; font-size: 24px; color: #e2e8f0; }
+.rc-school-info p { font-size: 12px; color: #94a3b8; }
+.rc-table thead th { background: #0f172a; color: white; padding: 8px 12px; font-size: 12px; }
+.rc-table tbody td { padding: 8px 12px; border-bottom: 1px solid rgba(226,232,240,0.08); color: #e2e8f0; }
+.rc-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 20px; }
+.rc-sum-item { text-align: center; border: 1px solid rgba(148,163,184,0.16); border-radius: 8px; padding: 12px; }
+.rc-sum-val { font-size: 22px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; color: #38bdf8; }
+.rc-sum-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+/* TIMETABLE CONTROLS */
+.tt-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+select { padding: 8px 12px; border: 1px solid rgba(148,163,184,0.18); border-radius: 8px; background: var(--surface); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; color: #e2e8f0; cursor: pointer; }
+select:focus { outline: none; border-color: var(--primary); }
+</style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div class="auth-box" id="auth-setup" style="display:none">
+    <div class="auth-brand">
+      <div class="auth-logo">RD</div>
+      <div class="auth-title-group">
+        <div class="auth-title">AL-IRSHAAD R&amp;D</div>
+        <div class="auth-subtitle">Secure administrator setup</div>
+      </div>
+    </div>
+    <p class="auth-description">Create a strong administrator password to protect the school dashboard and all management controls. This unlocks the full AL-IRSHAAD experience.</p>
+    <p class="auth-form-title">Create Admin Password</p>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="setup-pw1" placeholder="Enter a secure password" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" id="setup-pw2" placeholder="Confirm password" autocomplete="new-password">
+    </div>
+    <button class="btn-primary" onclick="doSetupPassword()">Create Password & Continue</button>
+    <p class="auth-error" id="setup-error"></p>
+    <p class="auth-note">Password should be at least 8 characters and include a mix of letters, numbers, and symbols.</p>
+  </div>
+  <div class="auth-box" id="auth-login" style="display:none">
+    <div class="auth-brand">
+      <div class="auth-logo">RD</div>
+      <div class="auth-title-group">
+        <div class="auth-title">Secure School Access</div>
+        <div class="auth-subtitle">Administrator sign-in</div>
+      </div>
+    </div>
+    <p class="auth-description">Welcome back. Sign in to manage attendance, grading, fees, and academic operations with a secure and professional admin portal.</p>
+    <p class="auth-form-title">Administrator Login</p>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="login-pw" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Sign In</button>
+    <p class="auth-error" id="login-error"></p>
+    <p class="auth-note">Need help? Contact your system administrator to reset your access credentials.</p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar" style="display:none">
+  <div id="sidebar-brand">
+    <div class="brand-mark">RD</div>
+    <div>
+      <div class="school-name">AL-IRSHAAD</div>
+      <div class="school-sub">Research & Development</div>
+    </div>
+  </div>
+  <div id="sidebar-user">
+    <div class="user-avatar">A</div>
+    <div class="user-meta">
+      <div class="user-name">Administrator</div>
+      <div class="user-role">Full system access</div>
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard',this)"><span class="icon icon-dashboard"></span><span class="label">Dashboard</span></div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">People</div>
+    <div class="nav-item" data-page="students" onclick="navigate('students',this)"><span class="icon icon-students"></span><span class="label">Students</span></div>
+    <div class="nav-item" data-page="teachers" onclick="navigate('teachers',this)"><span class="icon icon-teachers"></span><span class="label">Teachers</span></div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Academics</div>
+    <div class="nav-item" data-page="classes" onclick="navigate('classes',this)"><span class="icon icon-classes"></span><span class="label">Classes</span></div>
+    <div class="nav-item" data-page="subjects" onclick="navigate('subjects',this)"><span class="icon icon-subjects"></span><span class="label">Subjects</span></div>
+    <div class="nav-item" data-page="timetable" onclick="navigate('timetable',this)"><span class="icon icon-timetable"></span><span class="label">Timetable</span></div>
+    <div class="nav-item" data-page="attendance" onclick="navigate('attendance',this)"><span class="icon icon-attendance"></span><span class="label">Attendance</span></div>
+    <div class="nav-item" data-page="exams" onclick="navigate('exams',this)"><span class="icon icon-exams"></span><span class="label">Exams & Grades</span></div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Administration</div>
+    <div class="nav-item" data-page="fees" onclick="navigate('fees',this)"><span class="icon icon-fees"></span><span class="label">Fee Management</span></div>
+    <div class="nav-item" data-page="library" onclick="navigate('library',this)"><span class="icon icon-library"></span><span class="label">Library</span></div>
+    <div class="nav-item" data-page="bus" onclick="navigate('bus',this)"><span class="icon icon-bus"></span><span class="label">Bus Routes</span></div>
+    <div class="nav-item" data-page="reports" onclick="navigate('reports',this)"><span class="icon icon-reports"></span><span class="label">Reports</span></div>
+  </div>
+  <div id="sidebar-footer">
+    <button id="logout-btn" onclick="doLogout()">🔒 Lock System</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main" style="display:none">
+  <div id="topbar">
+    <button id="sidebar-toggle" class="topbar-button" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+      <span class="toggle-icon"></span>
+    </button>
+    <div id="topbar-title">Dashboard</div>
+    <div id="topbar-right">
+      <span class="topbar-badge" id="topbar-date"></span>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<!-- MODAL CONTAINER -->
+<div id="modal-container"></div>
+
+<script>
+// ============================================================
+// DATABASE
+// ============================================================
+let db;
+const DB_NAME = 'AlIrshaadSchoolDB';
+const DB_VERSION = 1;
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      const stores = [
+        { name: 'systemSettings', keyPath: 'key' },
+        { name: 'students', keyPath: 'id', autoIncrement: true, indexes: ['classId','busRouteId'] },
+        { name: 'teachers', keyPath: 'id', autoIncrement: true, indexes: ['email'] },
+        { name: 'classes', keyPath: 'id', autoIncrement: true, indexes: ['name'] },
+        { name: 'subjects', keyPath: 'id', autoIncrement: true, indexes: ['name'] },
+        { name: 'timetables', keyPath: 'id', autoIncrement: true, indexes: ['classId','teacherId'] },
+        { name: 'feeTypes', keyPath: 'id', autoIncrement: true },
+        { name: 'studentFees', keyPath: 'id', autoIncrement: true, indexes: ['studentId','feeTypeId'] },
+        { name: 'books', keyPath: 'id', autoIncrement: true, indexes: ['isbn','title'] },
+        { name: 'borrowedBooks', keyPath: 'id', autoIncrement: true, indexes: ['bookId','borrowerId'] },
+        { name: 'exams', keyPath: 'id', autoIncrement: true, indexes: ['classId','subjectId'] },
+        { name: 'grades', keyPath: 'id', autoIncrement: true, indexes: ['examId','studentId'] },
+        { name: 'busRoutes', keyPath: 'id', autoIncrement: true },
+        { name: 'attendance', keyPath: 'id', autoIncrement: true, indexes: ['entityId','date'] },
+      ];
+      stores.forEach(s => {
+        if (!d.objectStoreNames.contains(s.name)) {
+          const os = d.createObjectStore(s.name, { keyPath: s.keyPath, autoIncrement: !!s.autoIncrement });
+          (s.indexes||[]).forEach(idx => os.createIndex(idx, idx, { unique: false }));
+        }
+      });
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(); };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbGet(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result || []);
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbPut(store, data) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(data);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbAdd(store, data) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).add(data);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(key);
+    req.onsuccess = () => res();
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbGetByIndex(store, indexName, value) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const idx = tx.objectStore(store).index(indexName);
+    const req = idx.getAll(value);
+    req.onsuccess = () => res(req.result || []);
+    req.onerror = () => rej(req.error);
+  });
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+async function hashPassword(pw) {
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(pw));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function initAuth() {
+  await initDB();
+  const setting = await dbGet('systemSettings', 'adminPasswordHash');
+  if (!setting) {
+    // First time - set default password
+    const hash = await hashPassword('admin123');
+    await dbPut('systemSettings', { key: 'adminPasswordHash', value: hash });
+    await seedDemoData();
+    showLogin();
+  } else {
+    showLogin();
+  }
+}
+
+function showLogin() {
+  document.getElementById('auth-setup').style.display = 'none';
+  document.getElementById('auth-login').style.display = 'block';
+}
+
+async function doSetupPassword() {
+  const pw1 = document.getElementById('setup-pw1').value;
+  const pw2 = document.getElementById('setup-pw2').value;
+  const err = document.getElementById('setup-error');
+  if (!pw1 || pw1.length < 4) { err.textContent = 'Password must be at least 4 characters'; return; }
+  if (pw1 !== pw2) { err.textContent = 'Passwords do not match'; return; }
+  const hash = await hashPassword(pw1);
+  await dbPut('systemSettings', { key: 'adminPasswordHash', value: hash });
+  showLogin();
+}
+
+async function doLogin() {
+  const pw = document.getElementById('login-pw').value;
+  const err = document.getElementById('login-error');
+  if (!pw) { err.textContent = 'Please enter password'; return; }
+  const stored = await dbGet('systemSettings', 'adminPasswordHash');
+  const hash = await hashPassword(pw);
+  if (stored && hash === stored.value) {
+    document.getElementById('auth-overlay').style.display = 'none';
+    document.body.classList.remove('sidebar-hidden');
+    document.getElementById('sidebar').style.display = 'flex';
+    document.getElementById('main').style.display = 'flex';
+    document.getElementById('main').style.flexDirection = 'column';
+    navigate('dashboard');
+    updateTopbarDate();
+  } else {
+    err.textContent = 'Incorrect password';
+    document.getElementById('login-pw').value = '';
+  }
+}
+
+function doLogout() {
+  document.getElementById('auth-overlay').style.display = 'flex';
+  document.getElementById('sidebar').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+  document.body.classList.remove('sidebar-hidden');
+  document.getElementById('login-pw').value = '';
+  document.getElementById('login-error').textContent = '';
+}
+
+function toggleSidebar() {
+  document.body.classList.toggle('sidebar-hidden');
+}
+
+function updateTopbarDate() {
+  const d = new Date();
+  document.getElementById('topbar-date').textContent = d.toLocaleDateString('en-US', {weekday:'short',year:'numeric',month:'short',day:'numeric'});
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navigate(page, el) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else {
+    const found = document.querySelector(`[data-page="${page}"]`);
+    if (found) found.classList.add('active');
+  }
+  const titles = { dashboard:'Dashboard', students:'Student Management', teachers:'Teacher Management', classes:'Class Management', subjects:'Subject Management', timetable:'Timetable', attendance:'Attendance', exams:'Exams & Grades', fees:'Fee Management', library:'Library', bus:'Bus Routes', reports:'Reports' };
+  document.getElementById('topbar-title').textContent = titles[page] || page;
+  const pages = { dashboard: renderDashboard, students: renderStudents, teachers: renderTeachers, classes: renderClasses, subjects: renderSubjects, timetable: renderTimetable, attendance: renderAttendance, exams: renderExams, fees: renderFees, library: renderLibrary, bus: renderBus, reports: renderReports };
+  if (pages[page]) pages[page]();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, type='success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='success'?'✓':'✗'}</span><span>${msg}</span>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function showModal(html) {
+  const container = document.getElementById('modal-container');
+  container.innerHTML = `<div class="modal-overlay" onclick="closeModalOnOverlay(event)">${html}</div>`;
+}
+function closeModal() {
+  document.getElementById('modal-container').innerHTML = '';
+}
+function closeModalOnOverlay(e) {
+  if (e.target.classList.contains('modal-overlay')) closeModal();
+}
+
+// ============================================================
+// SEED DEMO DATA
+// ============================================================
+async function seedDemoData() {
+  // Classes
+  const c1 = await dbAdd('classes', { name:'Grade 9-A', section:'A', capacity:30, classTeacherId:null });
+  const c2 = await dbAdd('classes', { name:'Grade 9-B', section:'B', capacity:30, classTeacherId:null });
+  const c3 = await dbAdd('classes', { name:'Grade 10-A', section:'A', capacity:30, classTeacherId:null });
+  const c4 = await dbAdd('classes', { name:'Grade 10-B', section:'B', capacity:30, classTeacherId:null });
+  const c5 = await dbAdd('classes', { name:'Grade 11-A', section:'A', capacity:35, classTeacherId:null });
+  const c6 = await dbAdd('classes', { name:'Grade 12-A', section:'A', capacity:35, classTeacherId:null });
+
+  // Subjects
+  const s1 = await dbAdd('subjects', { name:'Mathematics', code:'MATH' });
+  const s2 = await dbAdd('subjects', { name:'Physics', code:'PHY' });
+  const s3 = await dbAdd('subjects', { name:'Chemistry', code:'CHEM' });
+  const s4 = await dbAdd('subjects', { name:'English Language', code:'ENG' });
+  const s5 = await dbAdd('subjects', { name:'Arabic Language', code:'ARB' });
+  const s6 = await dbAdd('subjects', { name:'Islamic Studies', code:'ISL' });
+  const s7 = await dbAdd('subjects', { name:'Biology', code:'BIO' });
+  const s8 = await dbAdd('subjects', { name:'History', code:'HIST' });
+
+  // Teachers
+  const t1 = await dbAdd('teachers', { firstName:'Ahmed', lastName:'Hassan', dob:'1980-03-15', gender:'Male', address:'Hargeisa, Zone 2', phone:'0634001001', email:'ahmed.hassan@alirshaad.edu', joiningDate:'2015-09-01', designation:'Senior Teacher', subjectsTaughtIds:[s1,s2], classAssignedId:c1 });
+  const t2 = await dbAdd('teachers', { firstName:'Faadumo', lastName:'Ciise', dob:'1985-07-22', gender:'Female', address:'Hargeisa, Zone 1', phone:'0634001002', email:'faadumo.ciise@alirshaad.edu', joiningDate:'2017-01-10', designation:'Teacher', subjectsTaughtIds:[s4,s5], classAssignedId:c2 });
+  const t3 = await dbAdd('teachers', { firstName:'Mohamed', lastName:'Abdi', dob:'1978-11-30', gender:'Male', address:'Hargeisa, Zone 3', phone:'0634001003', email:'m.abdi@alirshaad.edu', joiningDate:'2012-03-01', designation:'Head of Science', subjectsTaughtIds:[s3,s7], classAssignedId:c3 });
+  const t4 = await dbAdd('teachers', { firstName:'Hodan', lastName:'Warsame', dob:'1990-05-08', gender:'Female', address:'Hargeisa, Zone 4', phone:'0634001004', email:'hodan.w@alirshaad.edu', joiningDate:'2020-09-01', designation:'Teacher', subjectsTaughtIds:[s6,s8], classAssignedId:c4 });
+
+  // Update classes with teachers
+  await dbPut('classes', { id:c1, name:'Grade 9-A', section:'A', capacity:30, classTeacherId:t1 });
+  await dbPut('classes', { id:c2, name:'Grade 9-B', section:'B', capacity:30, classTeacherId:t2 });
+  await dbPut('classes', { id:c3, name:'Grade 10-A', section:'A', capacity:30, classTeacherId:t3 });
+  await dbPut('classes', { id:c4, name:'Grade 10-B', section:'B', capacity:30, classTeacherId:t4 });
+
+  // Bus Routes
+  const b1 = await dbAdd('busRoutes', { routeName:'Route A – East', driverName:'Cali Nuur', driverPhone:'0634002001', vehicleNumber:'SOM-1201', capacity:35, stops:['Airport Junction','Zone 2','Zone 3','School'] });
+  const b2 = await dbAdd('busRoutes', { routeName:'Route B – West', driverName:'Maxamuud Yuusuf', driverPhone:'0634002002', vehicleNumber:'SOM-1202', capacity:35, stops:['Stadium','Zone 4','Zone 5','School'] });
+
+  // Students
+  const students = [
+    { firstName:'Aamina', lastName:'Omar', dob:'2008-04-12', gender:'Female', bloodGroup:'O+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010001', email:'', parentName:'Omar Ali', parentPhone:'0634010002', parentEmail:'', admissionDate:'2022-09-01', classId:c1, rollNumber:'9A-001', busRouteId:b1, isActive:true },
+    { firstName:'Bile', lastName:'Hassan', dob:'2007-08-20', gender:'Male', bloodGroup:'A+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010003', email:'', parentName:'Hassan Bile', parentPhone:'0634010004', parentEmail:'', admissionDate:'2021-09-01', classId:c3, rollNumber:'10A-001', busRouteId:b2, isActive:true },
+    { firstName:'Caasha', lastName:'Abdi', dob:'2008-01-05', gender:'Female', bloodGroup:'B+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010005', email:'', parentName:'Abdi Farah', parentPhone:'0634010006', parentEmail:'', admissionDate:'2022-09-01', classId:c1, rollNumber:'9A-002', busRouteId:b1, isActive:true },
+    { firstName:'Daud', lastName:'Muuse', dob:'2007-11-15', gender:'Male', bloodGroup:'O-', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010007', email:'', parentName:'Muuse Ahmed', parentPhone:'0634010008', parentEmail:'', admissionDate:'2021-09-01', classId:c3, rollNumber:'10A-002', busRouteId:null, isActive:true },
+    { firstName:'Eelan', lastName:'Cabdi', dob:'2006-06-22', gender:'Female', bloodGroup:'AB+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010009', email:'', parentName:'Cabdi Warsame', parentPhone:'0634010010', parentEmail:'', admissionDate:'2020-09-01', classId:c5, rollNumber:'11A-001', busRouteId:b2, isActive:true },
+    { firstName:'Faarax', lastName:'Jama', dob:'2006-03-10', gender:'Male', bloodGroup:'A-', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010011', email:'', parentName:'Jama Hirsi', parentPhone:'0634010012', parentEmail:'', admissionDate:'2020-09-01', classId:c5, rollNumber:'11A-002', busRouteId:null, isActive:true },
+    { firstName:'Guled', lastName:'Axmed', dob:'2007-09-30', gender:'Male', bloodGroup:'O+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010013', email:'', parentName:'Axmed Maxamuud', parentPhone:'0634010014', parentEmail:'', admissionDate:'2021-09-01', classId:c4, rollNumber:'10B-001', busRouteId:b1, isActive:true },
+    { firstName:'Hibo', lastName:'Nuur', dob:'2007-12-01', gender:'Female', bloodGroup:'B-', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010015', email:'', parentName:'Nuur Cabdalle', parentPhone:'0634010016', parentEmail:'', admissionDate:'2021-09-01', classId:c4, rollNumber:'10B-002', busRouteId:b2, isActive:true },
+    { firstName:'Idiris', lastName:'Maxamed', dob:'2005-07-14', gender:'Male', bloodGroup:'A+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010017', email:'', parentName:'Maxamed Idiris', parentPhone:'0634010018', parentEmail:'', admissionDate:'2019-09-01', classId:c6, rollNumber:'12A-001', busRouteId:null, isActive:true },
+    { firstName:'Jawahir', lastName:'Cabdullahi', dob:'2005-02-28', gender:'Female', bloodGroup:'O+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010019', email:'', parentName:'Cabdullahi Xasan', parentPhone:'0634010020', parentEmail:'', admissionDate:'2019-09-01', classId:c6, rollNumber:'12A-002', busRouteId:b1, isActive:true },
+    { firstName:'Khadar', lastName:'Ibraahim', dob:'2008-05-17', gender:'Male', bloodGroup:'B+', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010021', email:'', parentName:'Ibraahim Cali', parentPhone:'0634010022', parentEmail:'', admissionDate:'2022-09-01', classId:c2, rollNumber:'9B-001', busRouteId:b2, isActive:true },
+    { firstName:'Layla', lastName:'Shiine', dob:'2008-10-08', gender:'Female', bloodGroup:'AB-', religion:'Islam', nationality:'Somali', address:'Hargeisa', phone:'0634010023', email:'', parentName:'Shiine Axmed', parentPhone:'0634010024', parentEmail:'', admissionDate:'2022-09-01', classId:c2, rollNumber:'9B-002', busRouteId:null, isActive:true },
+  ];
+  const studentIds = [];
+  for (const s of students) { const id = await dbAdd('students', s); studentIds.push(id); }
+
+  // Fee Types
+  const ft1 = await dbAdd('feeTypes', { name:'Tuition Fee', defaultAmount:150000 });
+  const ft2 = await dbAdd('feeTypes', { name:'Bus Fee', defaultAmount:50000 });
+  const ft3 = await dbAdd('feeTypes', { name:'Exam Fee', defaultAmount:30000 });
+
+  // Student Fees
+  const today = new Date().toISOString().split('T')[0];
+  for (let i=0; i<studentIds.length; i++) {
+    const sid = studentIds[i];
+    await dbAdd('studentFees', { studentId:sid, feeTypeId:ft1, assignedAmount:150000, amountPaid:i<8?150000:0, dueDate:'2025-10-31', paymentDate:i<8?today:null, receiptNumber:i<8?`RCP-${1000+i}`:null, status:i<8?'Paid':'Pending', remarks:'' });
+    if (students[i].busRouteId) {
+      await dbAdd('studentFees', { studentId:sid, feeTypeId:ft2, assignedAmount:50000, amountPaid:i<5?50000:0, dueDate:'2025-10-31', paymentDate:i<5?today:null, receiptNumber:i<5?`RCP-B${100+i}`:null, status:i<5?'Paid':'Pending', remarks:'' });
+    }
+  }
+
+  // Books
+  await dbAdd('books', { title:'Advanced Mathematics', author:'Dr. Khalid Ahmed', isbn:'978-0001', publisher:'Somali Academic Press', publicationYear:2020, category:'Mathematics', totalCopies:5, availableCopies:3 });
+  await dbAdd('books', { title:'Physics Fundamentals', author:'Prof. Sarah Johnson', isbn:'978-0002', publisher:'International Science', publicationYear:2019, category:'Science', totalCopies:4, availableCopies:4 });
+  await dbAdd('books', { title:'Quran & Tafseer Guide', author:'Sheikh Mustafa', isbn:'978-0003', publisher:'Islamic Foundation', publicationYear:2018, category:'Islamic Studies', totalCopies:10, availableCopies:8 });
+  await dbAdd('books', { title:'English Grammar in Use', author:'Raymond Murphy', isbn:'978-0004', publisher:'Cambridge', publicationYear:2021, category:'Language', totalCopies:6, availableCopies:5 });
+  await dbAdd('books', { title:'Somali History & Culture', author:'Dr. Abdi Hassan', isbn:'978-0005', publisher:'Horn Publishers', publicationYear:2017, category:'History', totalCopies:3, availableCopies:1 });
+
+  // Borrowed Books
+  const bk1 = await dbGet('books', 1); // workaround - get first book
+  const allBooks = await dbGetAll('books');
+  if (allBooks.length >= 2) {
+    await dbAdd('borrowedBooks', { bookId:allBooks[0].id, borrowerId:studentIds[0], borrowerType:'student', borrowDate:today, dueDate:'2025-12-01', returnedDate:null });
+    await dbAdd('borrowedBooks', { bookId:allBooks[0].id, borrowerId:studentIds[1], borrowerType:'student', borrowDate:today, dueDate:'2025-11-15', returnedDate:null });
+    await dbAdd('borrowedBooks', { bookId:allBooks[4].id, borrowerId:studentIds[2], borrowerType:'student', borrowDate:'2025-09-01', dueDate:'2025-09-15', returnedDate:null });
+  }
+
+  // Exams
+  const e1 = await dbAdd('exams', { name:'Mid-Term 2025', classId:c3, subjectId:s1, date:'2025-10-15', time:'08:00', durationMinutes:120, room:'Room 101' });
+  const e2 = await dbAdd('exams', { name:'Mid-Term 2025', classId:c3, subjectId:s2, date:'2025-10-16', time:'08:00', durationMinutes:120, room:'Room 101' });
+  const e3 = await dbAdd('exams', { name:'Mid-Term 2025', classId:c3, subjectId:s3, date:'2025-10-17', time:'08:00', durationMinutes:120, room:'Room 102' });
+
+  // Grades
+  await dbAdd('grades', { examId:e1, studentId:studentIds[1], subjectId:s1, marksObtained:85, totalMarks:100, gradeLetter:'A', remarks:'Excellent' });
+  await dbAdd('grades', { examId:e1, studentId:studentIds[3], subjectId:s1, marksObtained:72, totalMarks:100, gradeLetter:'B', remarks:'Good' });
+  await dbAdd('grades', { examId:e2, studentId:studentIds[1], subjectId:s2, marksObtained:78, totalMarks:100, gradeLetter:'B+', remarks:'Good' });
+  await dbAdd('grades', { examId:e3, studentId:studentIds[1], subjectId:s3, marksObtained:91, totalMarks:100, gradeLetter:'A+', remarks:'Outstanding' });
+
+  // Timetable
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const ttData = [
+    [s1,t1,c1],[s4,t2,c1],[s2,t1,c1],[s5,t2,c1],[s6,t4,c1],
+    [s1,t1,c3],[s2,t3,c3],[s3,t3,c3],[s4,t2,c3],[s7,t3,c3],
+  ];
+  for (let d=0; d<5; d++) {
+    for (let p=1; p<=5; p++) {
+      const item = ttData[((d+p)%10)];
+      await dbAdd('timetables', { classId:c1, dayOfWeek:days[d], periodNumber:p, subjectId:item[0], teacherId:item[1], room:`Room ${100+d}` });
+    }
+  }
+
+  // Attendance
+  const attDate = new Date(); attDate.setDate(attDate.getDate()-1);
+  const attStr = attDate.toISOString().split('T')[0];
+  for (let i=0; i<studentIds.length; i++) {
+    await dbAdd('attendance', { entityId:studentIds[i], entityType:'student', date:attStr, status:i===3?'Absent':i===7?'Late':'Present' });
+  }
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function renderDashboard() {
+  const content = document.getElementById('content');
+  content.innerHTML = '<div style="color:#aaa;padding:40px;text-align:center">Loading...</div>';
+
+  const [students, teachers, classes, fees, books, borrowed, exams] = await Promise.all([
+    dbGetAll('students'), dbGetAll('teachers'), dbGetAll('classes'),
+    dbGetAll('studentFees'), dbGetAll('books'), dbGetAll('borrowedBooks'), dbGetAll('exams')
+  ]);
+
+  const activeStudents = students.filter(s=>s.isActive).length;
+  const pendingFees = fees.filter(f=>f.status==='Pending').length;
+  const today = new Date().toISOString().split('T')[0];
+  const overdueBorrowed = borrowed.filter(b=>!b.returnedDate && b.dueDate < today).length;
+  const upcomingExams = exams.filter(e=>e.date>=today).length;
+
+  // Per-class student counts for chart
+  const classCounts = {};
+  classes.forEach(c => { classCounts[c.name] = 0; });
+  students.forEach(s => { if(classCounts[s.classId!==undefined]) classes.find(c=>c.id===s.classId)?.name; });
+  const classChartData = classes.map(c => ({ name:c.name, count: students.filter(s=>s.classId===c.id).length }));
+  const maxCount = Math.max(...classChartData.map(d=>d.count), 1);
+
+  // Recent students
+  const recent = students.slice(-5).reverse();
+
+  content.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card teal">
+        <div class="stat-number">${activeStudents}</div>
+        <div class="stat-label">Total Students</div>
+        <div class="stat-icon">👨‍🎓</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-number">${teachers.length}</div>
+        <div class="stat-label">Teachers</div>
+        <div class="stat-icon">👩‍🏫</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-number">${classes.length}</div>
+        <div class="stat-label">Classes</div>
+        <div class="stat-icon">🏫</div>
+      </div>
+      <div class="stat-card rose">
+        <div class="stat-number">${pendingFees}</div>
+        <div class="stat-label">Pending Fees</div>
+        <div class="stat-icon">💰</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-number">${overdueBorrowed}</div>
+        <div class="stat-label">Overdue Books</div>
+        <div class="stat-icon">📖</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-number">${upcomingExams}</div>
+        <div class="stat-label">Upcoming Exams</div>
+        <div class="stat-icon">📝</div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-header">📊 Students per Class</div>
+        <div class="dash-card-body" style="padding:20px">
+          <div class="chart-bar-wrap">
+            ${classChartData.map(d=>`<div class="chart-bar-col">
+              <div class="chart-bar-val">${d.count}</div>
+              <div class="chart-bar" style="height:${(d.count/maxCount)*90}px;background:var(--teal)"></div>
+              <div class="chart-bar-label" title="${d.name}">${d.name.replace('Grade ','')}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">⚡ Quick Actions</div>
+        <div class="dash-card-body" style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button class="btn-primary" onclick="navigate('students')">+ Add Student</button>
+          <button class="btn-gold" onclick="navigate('fees')">Record Payment</button>
+          <button class="btn-secondary" onclick="navigate('attendance')">Mark Attendance</button>
+          <button class="btn-secondary" onclick="navigate('library')">Issue Book</button>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">🕐 Recent Students</div>
+        <div class="dash-card-body">
+          ${recent.length ? recent.map(s=>{
+            const cls = classes.find(c=>c.id===s.classId);
+            return `<div class="dash-list-item">
+              <div>
+                <div style="font-weight:500">${s.firstName} ${s.lastName}</div>
+                <div style="font-size:11px;color:#888">${cls?.name||'—'} · Roll: ${s.rollNumber||'—'}</div>
+              </div>
+              <span class="badge ${s.isActive?'badge-green':'badge-gray'}">${s.isActive?'Active':'Inactive'}</span>
+            </div>`;
+          }).join('') : '<div class="empty-state">No students yet</div>'}
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">📚 Overdue Library Books</div>
+        <div class="dash-card-body">
+          ${overdueBorrowed ? borrowed.filter(b=>!b.returnedDate&&b.dueDate<today).map(b=>{
+            const book = books.find(bk=>bk.id===b.bookId);
+            const stu = students.find(s=>s.id===b.borrowerId);
+            return `<div class="dash-list-item">
+              <div>
+                <div style="font-weight:500">${book?.title||'Unknown Book'}</div>
+                <div style="font-size:11px;color:#888">${stu?stu.firstName+' '+stu.lastName:'Unknown'}</div>
+              </div>
+              <span class="badge badge-red">Due ${b.dueDate}</span>
+            </div>`;
+          }).join('') : '<div class="empty-state">No overdue books 🎉</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// STUDENTS
+// ============================================================
+let studentSearch = '';
+async function renderStudents() {
+  const [students, classes, busRoutes] = await Promise.all([dbGetAll('students'), dbGetAll('classes'), dbGetAll('busRoutes')]);
+  const filtered = students.filter(s => {
+    const q = studentSearch.toLowerCase();
+    return !q || (s.firstName+' '+s.lastName+s.rollNumber).toLowerCase().includes(q);
+  });
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Students</div>
+      <div class="module-actions">
+        <div class="search-bar">
+          <input type="text" placeholder="Search by name or roll..." value="${studentSearch}" oninput="studentSearch=this.value;renderStudents()">
+          <button>🔍</button>
+        </div>
+        <button class="btn-primary" onclick="showAddStudentModal()">+ Add Student</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Roll No</th><th>Name</th><th>Class</th><th>Gender</th><th>Parent Phone</th><th>Status</th><th>Actions</th>
+        </tr></thead>
+        <tbody>
+          ${filtered.length ? filtered.map(s=>{
+            const cls = classes.find(c=>c.id===s.classId);
+            return `<tr>
+              <td><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">${s.rollNumber||'—'}</span></td>
+              <td style="font-weight:500">${s.firstName} ${s.lastName}</td>
+              <td>${cls?.name||'—'}</td>
+              <td>${s.gender||'—'}</td>
+              <td>${s.parentPhone||'—'}</td>
+              <td><span class="badge ${s.isActive?'badge-green':'badge-gray'}">${s.isActive?'Active':'Inactive'}</span></td>
+              <td><div class="action-btns">
+                <button class="btn-secondary btn-sm" onclick="showStudentDetail(${s.id})">View</button>
+                <button class="btn-secondary btn-sm" onclick="showEditStudentModal(${s.id})">Edit</button>
+                <button class="btn-danger btn-sm" onclick="deleteStudent(${s.id})">Del</button>
+              </div></td>
+            </tr>`;
+          }).join('') : `<tr><td colspan="7"><div class="empty-state">No students found</div></td></tr>`}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:#888">Showing ${filtered.length} of ${students.length} students</div>
+  `;
+}
+
+async function showAddStudentModal(prefill={}) {
+  const [classes, busRoutes] = await Promise.all([dbGetAll('classes'), dbGetAll('busRoutes')]);
+  showModal(`<div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">${prefill.id?'Edit':'Add New'} Student</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section-title">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input id="s-fn" value="${prefill.firstName||''}"></div>
+        <div class="form-group"><label>Last Name *</label><input id="s-ln" value="${prefill.lastName||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="s-dob" value="${prefill.dob||''}"></div>
+        <div class="form-group"><label>Gender</label><select id="s-gen">
+          <option value="">Select</option>
+          <option value="Male" ${prefill.gender==='Male'?'selected':''}>Male</option>
+          <option value="Female" ${prefill.gender==='Female'?'selected':''}>Female</option>
+        </select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Blood Group</label><input id="s-bg" value="${prefill.bloodGroup||''}" placeholder="e.g. O+"></div>
+        <div class="form-group"><label>Nationality</label><input id="s-nat" value="${prefill.nationality||'Somali'}"></div>
+      </div>
+      <div class="form-section-title">Contact Information</div>
+      <div class="form-group"><label>Address</label><input id="s-addr" value="${prefill.address||''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone</label><input id="s-ph" value="${prefill.phone||''}"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="s-em" value="${prefill.email||''}"></div>
+      </div>
+      <div class="form-section-title">Parent / Guardian</div>
+      <div class="form-row">
+        <div class="form-group"><label>Parent Name *</label><input id="s-pn" value="${prefill.parentName||''}"></div>
+        <div class="form-group"><label>Parent Phone *</label><input id="s-pp" value="${prefill.parentPhone||''}"></div>
+      </div>
+      <div class="form-section-title">Admission Details</div>
+      <div class="form-row">
+        <div class="form-group"><label>Admission Date</label><input type="date" id="s-ad" value="${prefill.admissionDate||''}"></div>
+        <div class="form-group"><label>Roll Number</label><input id="s-rn" value="${prefill.rollNumber||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Class *</label><select id="s-cls">
+          <option value="">Select Class</option>
+          ${classes.map(c=>`<option value="${c.id}" ${prefill.classId===c.id?'selected':''}>${c.name}</option>`).join('')}
+        </select></div>
+        <div class="form-group"><label>Bus Route</label><select id="s-bus">
+          <option value="">None</option>
+          ${busRoutes.map(r=>`<option value="${r.id}" ${prefill.busRouteId===r.id?'selected':''}>${r.routeName}</option>`).join('')}
+        </select></div>
+      </div>
+      <div class="form-group"><label>Status</label><select id="s-active">
+        <option value="true" ${prefill.isActive!==false?'selected':''}>Active</option>
+        <option value="false" ${prefill.isActive===false?'selected':''}>Inactive</option>
+      </select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveStudent(${prefill.id||'null'})">Save Student</button>
+    </div>
+  </div>`);
+}
+
+async function showEditStudentModal(id) {
+  const s = await dbGet('students', id);
+  if (s) showAddStudentModal(s);
+}
+
+async function saveStudent(id) {
+  const fn = document.getElementById('s-fn').value.trim();
+  const ln = document.getElementById('s-ln').value.trim();
+  const pn = document.getElementById('s-pn').value.trim();
+  const pp = document.getElementById('s-pp').value.trim();
+  const cls = document.getElementById('s-cls').value;
+  if (!fn||!ln||!pn||!pp||!cls) { toast('Please fill required fields','error'); return; }
+  const data = {
+    firstName:fn, lastName:ln, dob:document.getElementById('s-dob').value,
+    gender:document.getElementById('s-gen').value,
+    bloodGroup:document.getElementById('s-bg').value,
+    nationality:document.getElementById('s-nat').value,
+    address:document.getElementById('s-addr').value,
+    phone:document.getElementById('s-ph').value,
+    email:document.getElementById('s-em').value,
+    parentName:pn, parentPhone:pp, parentEmail:'',
+    admissionDate:document.getElementById('s-ad').value,
+    rollNumber:document.getElementById('s-rn').value,
+    classId:parseInt(document.getElementById('s-cls').value),
+    busRouteId:document.getElementById('s-bus').value?parseInt(document.getElementById('s-bus').value):null,
+    isActive:document.getElementById('s-active').value==='true',
+  };
+  if (id) { data.id = id; await dbPut('students', data); toast('Student updated'); }
+  else { await dbAdd('students', data); toast('Student added'); }
+  closeModal(); renderStudents();
+}
+
+async function deleteStudent(id) {
+  if (!confirm('Delete this student? This cannot be undone.')) return;
+  await dbDelete('students', id); toast('Student deleted'); renderStudents();
+}
+
+async function showStudentDetail(id) {
+  const [s, classes, busRoutes, fees, feeTypes] = await Promise.all([
+    dbGet('students', id), dbGetAll('classes'), dbGetAll('busRoutes'),
+    dbGetByIndex('studentFees','studentId',id), dbGetAll('feeTypes')
+  ]);
+  const cls = classes.find(c=>c.id===s.classId);
+  const bus = busRoutes.find(b=>b.id===s.busRouteId);
+  const totalOwed = fees.reduce((a,f)=>a+f.assignedAmount,0);
+  const totalPaid = fees.reduce((a,f)=>a+f.amountPaid,0);
+  const pct = totalOwed ? Math.round(totalPaid/totalOwed*100) : 100;
+  showModal(`<div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">${s.firstName} ${s.lastName}</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info-item"><label>Roll Number</label><span style="font-family:'IBM Plex Mono',monospace">${s.rollNumber||'—'}</span></div>
+        <div class="info-item"><label>Class</label><span>${cls?.name||'—'}</span></div>
+        <div class="info-item"><label>Gender</label><span>${s.gender||'—'}</span></div>
+        <div class="info-item"><label>Date of Birth</label><span>${s.dob||'—'}</span></div>
+        <div class="info-item"><label>Blood Group</label><span>${s.bloodGroup||'—'}</span></div>
+        <div class="info-item"><label>Nationality</label><span>${s.nationality||'—'}</span></div>
+        <div class="info-item"><label>Phone</label><span>${s.phone||'—'}</span></div>
+        <div class="info-item"><label>Address</label><span>${s.address||'—'}</span></div>
+        <div class="info-item"><label>Parent Name</label><span>${s.parentName||'—'}</span></div>
+        <div class="info-item"><label>Parent Phone</label><span>${s.parentPhone||'—'}</span></div>
+        <div class="info-item"><label>Bus Route</label><span>${bus?.routeName||'None'}</span></div>
+        <div class="info-item"><label>Admission Date</label><span>${s.admissionDate||'—'}</span></div>
+      </div>
+      <div class="form-section-title">Fee Summary</div>
+      <div style="margin-bottom:8px;display:flex;justify-content:space-between;font-size:13px">
+        <span>Paid: <strong>${totalPaid.toLocaleString()} SOS</strong></span>
+        <span>Total: <strong>${totalOwed.toLocaleString()} SOS</strong></span>
+        <span>${pct}%</span>
+      </div>
+      <div class="fee-bar-wrap"><div class="fee-bar-fill" style="width:${pct}%"></div></div>
+      <div style="margin-top:12px">
+        ${fees.map(f=>{
+          const ft = feeTypes.find(t=>t.id===f.feeTypeId);
+          return `<div class="dash-list-item" style="border:1px solid var(--parchment);border-radius:8px;margin-bottom:6px">
+            <div><div style="font-weight:500">${ft?.name||'Fee'}</div><div style="font-size:11px;color:#888">Due: ${f.dueDate}</div></div>
+            <div style="text-align:right">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:13px">${f.amountPaid}/${f.assignedAmount} SOS</div>
+              <span class="badge ${f.status==='Paid'?'badge-green':f.status==='Pending'?'badge-yellow':'badge-red'}">${f.status}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Close</button>
+      <button class="btn-primary" onclick="closeModal();showEditStudentModal(${s.id})">Edit</button>
+      <button class="btn-gold no-print" onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>`);
+}
+
+// ============================================================
+// TEACHERS
+// ============================================================
+let teacherSearch = '';
+async function renderTeachers() {
+  const [teachers, subjects, classes] = await Promise.all([dbGetAll('teachers'), dbGetAll('subjects'), dbGetAll('classes')]);
+  const filtered = teachers.filter(t => {
+    const q = teacherSearch.toLowerCase();
+    return !q || (t.firstName+' '+t.lastName+t.email).toLowerCase().includes(q);
+  });
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Teachers</div>
+      <div class="module-actions">
+        <div class="search-bar">
+          <input type="text" placeholder="Search by name or email..." value="${teacherSearch}" oninput="teacherSearch=this.value;renderTeachers()">
+          <button>🔍</button>
+        </div>
+        <button class="btn-primary" onclick="showAddTeacherModal()">+ Add Teacher</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Name</th><th>Designation</th><th>Subjects</th><th>Class Teacher</th><th>Phone</th><th>Joined</th><th>Actions</th>
+        </tr></thead>
+        <tbody>
+          ${filtered.length ? filtered.map(t=>{
+            const cls = classes.find(c=>c.id===t.classAssignedId);
+            const subjs = (t.subjectsTaughtIds||[]).map(id=>subjects.find(s=>s.id===id)?.name).filter(Boolean);
+            return `<tr>
+              <td style="font-weight:500">${t.firstName} ${t.lastName}</td>
+              <td>${t.designation||'—'}</td>
+              <td style="font-size:12px">${subjs.join(', ')||'—'}</td>
+              <td>${cls?.name||'—'}</td>
+              <td>${t.phone||'—'}</td>
+              <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">${t.joiningDate||'—'}</span></td>
+              <td><div class="action-btns">
+                <button class="btn-secondary btn-sm" onclick="showEditTeacherModal(${t.id})">Edit</button>
+                <button class="btn-danger btn-sm" onclick="deleteTeacher(${t.id})">Del</button>
+              </div></td>
+            </tr>`;
+          }).join('') : `<tr><td colspan="7"><div class="empty-state">No teachers found</div></td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function showAddTeacherModal(prefill={}) {
+  const [subjects, classes] = await Promise.all([dbGetAll('subjects'), dbGetAll('classes')]);
+  showModal(`<div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">${prefill.id?'Edit':'Add New'} Teacher</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section-title">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input id="t-fn" value="${prefill.firstName||''}"></div>
+        <div class="form-group"><label>Last Name *</label><input id="t-ln" value="${prefill.lastName||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="t-dob" value="${prefill.dob||''}"></div>
+        <div class="form-group"><label>Gender</label><select id="t-gen">
+          <option value="">Select</option>
+          <option value="Male" ${prefill.gender==='Male'?'selected':''}>Male</option>
+          <option value="Female" ${prefill.gender==='Female'?'selected':''}>Female</option>
+        </select></div>
+      </div>
+      <div class="form-section-title">Contact & Employment</div>
+      <div class="form-row">
+        <div class="form-group"><label>Phone *</label><input id="t-ph" value="${prefill.phone||''}"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="t-em" value="${prefill.email||''}"></div>
+      </div>
+      <div class="form-group"><label>Address</label><input id="t-addr" value="${prefill.address||''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Joining Date</label><input type="date" id="t-jd" value="${prefill.joiningDate||''}"></div>
+        <div class="form-group"><label>Designation</label><input id="t-des" value="${prefill.designation||''}" placeholder="e.g. Senior Teacher"></div>
+      </div>
+      <div class="form-section-title">Assignment</div>
+      <div class="form-group"><label>Subjects Taught</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px;border:1px solid var(--border-dark);border-radius:8px;background:white">
+          ${subjects.map(s=>`<label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer">
+            <input type="checkbox" value="${s.id}" ${(prefill.subjectsTaughtIds||[]).includes(s.id)?'checked':''} class="t-subj-cb"> ${s.name}
+          </label>`).join('')}
+        </div>
+      </div>
+      <div class="form-group"><label>Class Teacher Of</label><select id="t-cls">
+        <option value="">None</option>
+        ${classes.map(c=>`<option value="${c.id}" ${prefill.classAssignedId===c.id?'selected':''}>${c.name}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveTeacher(${prefill.id||'null'})">Save Teacher</button>
+    </div>
+  </div>`);
+}
+
+async function showEditTeacherModal(id) {
+  const t = await dbGet('teachers', id);
+  if (t) showAddTeacherModal(t);
+}
+
+async function saveTeacher(id) {
+  const fn = document.getElementById('t-fn').value.trim();
+  const ln = document.getElementById('t-ln').value.trim();
+  const ph = document.getElementById('t-ph').value.trim();
+  if (!fn||!ln||!ph) { toast('Please fill required fields','error'); return; }
+  const subjectIds = [...document.querySelectorAll('.t-subj-cb:checked')].map(cb=>parseInt(cb.value));
+  const data = {
+    firstName:fn, lastName:ln, dob:document.getElementById('t-dob').value,
+    gender:document.getElementById('t-gen').value,
+    phone:ph, email:document.getElementById('t-em').value,
+    address:document.getElementById('t-addr').value,
+    joiningDate:document.getElementById('t-jd').value,
+    designation:document.getElementById('t-des').value,
+    subjectsTaughtIds:subjectIds,
+    classAssignedId:document.getElementById('t-cls').value?parseInt(document.getElementById('t-cls').value):null,
+  };
+  if (id) { data.id=id; await dbPut('teachers', data); toast('Teacher updated'); }
+  else { await dbAdd('teachers', data); toast('Teacher added'); }
+  closeModal(); renderTeachers();
+}
+
+async function deleteTeacher(id) {
+  if (!confirm('Delete this teacher?')) return;
+  await dbDelete('teachers', id); toast('Teacher deleted'); renderTeachers();
+}
+
+// ============================================================
+// CLASSES
+// ============================================================
+async function renderClasses() {
+  const [classes, teachers, students] = await Promise.all([dbGetAll('classes'), dbGetAll('teachers'), dbGetAll('students')]);
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Classes</div>
+      <div class="module-actions">
+        <button class="btn-primary" onclick="showAddClassModal()">+ Add Class</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+      ${classes.map(c=>{
+        const teacher = teachers.find(t=>t.id===c.classTeacherId);
+        const enrolled = students.filter(s=>s.classId===c.id).length;
+        const pct = Math.min(100, Math.round(enrolled/c.capacity*100));
+        return `<div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <div style="font-size:18px;font-weight:700;font-family:'Amiri',serif">${c.name}</div>
+              <div style="font-size:12px;color:#888;margin-top:2px">Section ${c.section||'—'}</div>
+            </div>
+            <div class="action-btns">
+              <button class="btn-secondary btn-sm" onclick="showEditClassModal(${c.id})">Edit</button>
+              <button class="btn-danger btn-sm" onclick="deleteClass(${c.id})">Del</button>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px">
+            <div class="info-item" style="margin-bottom:8px"><label>Class Teacher</label><span>${teacher?teacher.firstName+' '+teacher.lastName:'—'}</span></div>
+          </div>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>${enrolled} students enrolled</span><span>${enrolled}/${c.capacity}</span>
+            </div>
+            <div class="fee-bar-wrap"><div class="fee-bar-fill" style="width:${pct}%;background:${pct>90?'var(--rose)':pct>70?'var(--gold)':'var(--teal)'}"></div></div>
+          </div>
+        </div>`;
+      }).join('')}
+      ${classes.length===0?'<div class="empty-state" style="padding:40px">No classes added yet</div>':''}
+    </div>
+  `;
+}
+
+async function showAddClassModal(prefill={}) {
+  const teachers = await dbGetAll('teachers');
+  showModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">${prefill.id?'Edit':'Add'} Class</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Class Name *</label><input id="c-name" value="${prefill.name||''}" placeholder="e.g. Grade 10-A"></div>
+        <div class="form-group"><label>Section</label><input id="c-sec" value="${prefill.section||''}" placeholder="A, B, C..."></div>
+      </div>
+      <div class="form-group"><label>Capacity</label><input type="number" id="c-cap" value="${prefill.capacity||30}"></div>
+      <div class="form-group"><label>Class Teacher</label><select id="c-teacher">
+        <option value="">None</option>
+        ${teachers.map(t=>`<option value="${t.id}" ${prefill.classTeacherId===t.id?'selected':''}>${t.firstName} ${t.lastName}</option>`).join('')}
+      </select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveClass(${prefill.id||'null'})">Save</button>
+    </div>
+  </div>`);
+}
+
+async function showEditClassModal(id) {
+  const c = await dbGet('classes', id);
+  if (c) showAddClassModal(c);
+}
+
+async function saveClass(id) {
+  const name = document.getElementById('c-name').value.trim();
+  if (!name) { toast('Class name required','error'); return; }
+  const data = { name, section:document.getElementById('c-sec').value, capacity:parseInt(document.getElementById('c-cap').value)||30, classTeacherId:document.getElementById('c-teacher').value?parseInt(document.getElementById('c-teacher').value):null };
+  if (id) { data.id=id; await dbPut('classes', data); toast('Class updated'); }
+  else { await dbAdd('classes', data); toast('Class added'); }
+  closeModal(); renderClasses();
+}
+
+async function deleteClass(id) {
+  if (!confirm('Delete this class?')) return;
+  await dbDelete('classes', id); toast('Deleted'); renderClasses();
+}
+
+// ============================================================
+// SUBJECTS
+// ============================================================
+async function renderSubjects() {
+  const subjects = await dbGetAll('subjects');
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Subjects</div>
+      <div class="module-actions">
+        <button class="btn-primary" onclick="showAddSubjectModal()">+ Add Subject</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Subject Name</th><th>Code</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${subjects.map(s=>`<tr>
+            <td style="font-weight:500">${s.name}</td>
+            <td><span class="badge badge-blue">${s.code||'—'}</span></td>
+            <td><div class="action-btns">
+              <button class="btn-secondary btn-sm" onclick="showEditSubjectModal(${s.id})">Edit</button>
+              <button class="btn-danger btn-sm" onclick="deleteSubject(${s.id})">Del</button>
+            </div></td>
+          </tr>`).join('')}
+          ${subjects.length===0?`<tr><td colspan="3"><div class="empty-state">No subjects yet</div></td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function showAddSubjectModal(prefill={}) {
+  showModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">${prefill.id?'Edit':'Add'} Subject</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Subject Name *</label><input id="subj-name" value="${prefill.name||''}"></div>
+      <div class="form-group"><label>Subject Code</label><input id="subj-code" value="${prefill.code||''}" placeholder="e.g. MATH"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveSubject(${prefill.id||'null'})">Save</button>
+    </div>
+  </div>`);
+}
+
+async function showEditSubjectModal(id) {
+  const s = await dbGet('subjects', id);
+  if (s) showAddSubjectModal(s);
+}
+
+async function saveSubject(id) {
+  const name = document.getElementById('subj-name').value.trim();
+  if (!name) { toast('Name required','error'); return; }
+  const data = { name, code: document.getElementById('subj-code').value.trim().toUpperCase() };
+  if (id) { data.id=id; await dbPut('subjects', data); toast('Subject updated'); }
+  else { await dbAdd('subjects', data); toast('Subject added'); }
+  closeModal(); renderSubjects();
+}
+
+async function deleteSubject(id) {
+  if (!confirm('Delete subject?')) return;
+  await dbDelete('subjects', id); toast('Deleted'); renderSubjects();
+}
+
+// ============================================================
+// TIMETABLE
+// ============================================================
+let ttClassId = null;
+async function renderTimetable() {
+  const [classes, subjects, teachers, timetables] = await Promise.all([dbGetAll('classes'), dbGetAll('subjects'), dbGetAll('teachers'), dbGetAll('timetables')]);
+  if (!ttClassId && classes.length) ttClassId = classes[0].id;
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  const periods = [1,2,3,4,5,6,7];
+  const classTT = timetables.filter(t=>t.classId===ttClassId);
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Timetable</div>
+      <div class="module-actions">
+        <button class="btn-gold no-print" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+    <div class="tt-controls">
+      <label style="font-size:13px;font-weight:600">View Class:</label>
+      <select onchange="ttClassId=parseInt(this.value);renderTimetable()">
+        ${classes.map(c=>`<option value="${c.id}" ${c.id===ttClassId?'selected':''}>${c.name}</option>`).join('')}
+      </select>
+      <button class="btn-primary" onclick="showAddTTSlotModal()">+ Add Slot</button>
+    </div>
+    <div class="tt-grid" style="overflow-x:auto">
+      <div class="tt-header-row">
+        <div class="tt-header-cell day-header">Period</div>
+        ${days.map(d=>`<div class="tt-header-cell">${d}</div>`).join('')}
+      </div>
+      ${periods.map(p=>`<div class="tt-row">
+        <div class="tt-period-cell">P${p}</div>
+        ${days.map(d=>{
+          const slot = classTT.find(t=>t.dayOfWeek===d&&t.periodNumber===p);
+          if (slot) {
+            const subj = subjects.find(s=>s.id===slot.subjectId);
+            const tchr = teachers.find(t=>t.id===slot.teacherId);
+            return `<div class="tt-cell" onclick="deleteTTSlot(${slot.id})">
+              <div class="tt-slot">
+                <div class="subj">${subj?.name||'?'}</div>
+                <div class="tchr">${tchr?tchr.firstName[0]+'.'+tchr.lastName:''}</div>
+              </div>
+            </div>`;
+          }
+          return `<div class="tt-cell" onclick="showAddTTSlotModal('${d}',${p})"></div>`;
+        }).join('')}
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#aaa">Click a cell to add/remove. Click a filled slot to delete.</div>
+  `;
+}
+
+async function showAddTTSlotModal(day='', period='') {
+  const [classes, subjects, teachers] = await Promise.all([dbGetAll('classes'), dbGetAll('subjects'), dbGetAll('teachers')]);
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  showModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Timetable Slot</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Class *</label><select id="tt-cls">
+        ${classes.map(c=>`<option value="${c.id}" ${c.id===ttClassId?'selected':''}>${c.name}</option>`).join('')}
+      </select></div>
+      <div class="form-row">
+        <div class="form-group"><label>Day *</label><select id="tt-day">
+          ${days.map(d=>`<option value="${d}" ${d===day?'selected':''}>${d}</option>`).join('')}
+        </select></div>
+        <div class="form-group"><label>Period *</label><select id="tt-period">
+          ${[1,2,3,4,5,6,7].map(p=>`<option value="${p}" ${p==period?'selected':''}>${p}</option>`).join('')}
+        </select></div>
+      </div>
+      <div class="form-group"><label>Subject *</label><select id="tt-subj">
+        ${subjects.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}
+      </select></div>
+      <div class="form-group"><label>Teacher</label><select id="tt-tchr">
+        <option value="">None</option>
+        ${teachers.map(t=>`<option value="${t.id}">${t.firstName} ${t.lastName}</option>`).join('')}
+      </select></div>
+      <div class="form-group"><label>Room</label><input id="tt-room" placeholder="e.g. Room 101"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveTTSlot()">Add Slot</button>
+    </div>
+  </div>`);
+}
+
+async function saveTTSlot() {
+  const classId = parseInt(document.getElementById('tt-cls').value);
+  const day = document.getElementById('tt-day').value;
+  const period = parseInt(document.getElementById('tt-period').value);
+  const subjectId = parseInt(document.getElementById('tt-subj').value);
+  // Conflict check
+  const existing = await dbGetAll('timetables');
+  const conflict = existing.find(t=>t.classId===classId&&t.dayOfWeek===day&&t.periodNumber===period);
+  if (conflict) { toast('Slot already exists for this class/day/period','error'); return; }
+  await dbAdd('timetables', { classId, dayOfWeek:day, periodNumber:period, subjectId, teacherId:document.getElementById('tt-tchr').value?parseInt(document.getElementById('tt-tchr').value):null, room:document.getElementById('tt-room').value });
+  toast('Slot added'); closeModal(); renderTimetable();
+}
+
+async function deleteTTSlot(id) {
+  if (!confirm('Remove this timetable slot?')) return;
+  await dbDelete('timetables', id); toast('Slot removed'); renderTimetable();
+}
+
+// ============================================================
+// ATTENDANCE
+// ============================================================
+let attClassId = null, attDate = new Date().toISOString().split('T')[0];
+async function renderAttendance() {
+  const [classes, students] = await Promise.all([dbGetAll('classes'), dbGetAll('students')]);
+  if (!attClassId && classes.length) attClassId = classes[0].id;
+  const classStudents = students.filter(s=>s.classId===attClassId&&s.isActive);
+  const existing = await Promise.all(classStudents.map(s=>dbGetByIndex('attendance','entityId',s.id)));
+  const attMap = {};
+  existing.flat().filter(a=>a.date===attDate&&a.entityType==='student').forEach(a=>{attMap[a.entityId]=a;});
+
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Attendance</div>
+      <div class="module-actions no-print">
+        <select onchange="attClassId=parseInt(this.value);renderAttendance()">
+          ${classes.map(c=>`<option value="${c.id}" ${c.id===attClassId?'selected':''}>${c.name}</option>`).join('')}
+        </select>
+        <input type="date" value="${attDate}" onchange="attDate=this.value;renderAttendance()" style="padding:8px;border:1px solid var(--border-dark);border-radius:8px;font-family:inherit">
+        <button class="btn-primary" onclick="saveAttendance(${JSON.stringify(classStudents.map(s=>s.id)).replace(/"/g,"'")})">Save Attendance</button>
+        <button class="btn-gold no-print" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Roll No</th><th>Student Name</th><th>Present</th><th>Absent</th><th>Late</th></tr></thead>
+        <tbody>
+          ${classStudents.map(s=>{
+            const cur = attMap[s.id]?.status||'Present';
+            return `<tr>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:12px">${s.rollNumber||'—'}</td>
+              <td style="font-weight:500">${s.firstName} ${s.lastName}</td>
+              ${['Present','Absent','Late'].map(st=>`<td style="text-align:center"><input type="radio" name="att-${s.id}" value="${st}" ${cur===st?'checked':''}></td>`).join('')}
+            </tr>`;
+          }).join('')}
+          ${classStudents.length===0?`<tr><td colspan="5"><div class="empty-state">No students in this class</div></td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function saveAttendance(studentIds) {
+  for (const sid of studentIds) {
+    const radios = document.querySelectorAll(`input[name="att-${sid}"]`);
+    let status = 'Present';
+    radios.forEach(r=>{ if(r.checked) status=r.value; });
+    // Check existing
+    const existing = await dbGetByIndex('attendance','entityId',sid);
+    const todayRec = existing.find(a=>a.date===attDate&&a.entityType==='student');
+    if (todayRec) { await dbPut('attendance', {...todayRec, status}); }
+    else { await dbAdd('attendance', { entityId:sid, entityType:'student', date:attDate, status }); }
+  }
+  toast('Attendance saved');
+}
+
+// ============================================================
+// EXAMS & GRADES
+// ============================================================
+async function renderExams() {
+  const [exams, classes, subjects, students, grades] = await Promise.all([dbGetAll('exams'), dbGetAll('classes'), dbGetAll('subjects'), dbGetAll('students'), dbGetAll('grades')]);
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Exams & Grades</div>
+      <div class="module-actions">
+        <button class="btn-primary" onclick="showAddExamModal()">+ Schedule Exam</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Exam Name</th><th>Subject</th><th>Class</th><th>Date</th><th>Room</th><th>Grades</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${exams.map(e=>{
+            const cls = classes.find(c=>c.id===e.classId);
+            const subj = subjects.find(s=>s.id===e.subjectId);
+            const gradeCount = grades.filter(g=>g.examId===e.id).length;
+            return `<tr>
+              <td style="font-weight:500">${e.name}</td>
+              <td>${subj?.name||'—'}</td>
+              <td>${cls?.name||'—'}</td>
+              <td><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">${e.date||'—'}</span></td>
+              <td>${e.room||'—'}</td>
+              <td><span class="badge badge-blue">${gradeCount} grades</span></td>
+              <td><div class="action-btns">
+                <button class="btn-secondary btn-sm" onclick="showGradesModal(${e.id})">Grades</button>
+                <button class="btn-danger btn-sm" onclick="deleteExam(${e.id})">Del</button>
+              </div></td>
+            </tr>`;
+          }).join('')}
+          ${exams.length===0?`<tr><td colspan="7"><div class="empty-state">No exams scheduled</div></td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function showAddExamModal(prefill={}) {
+  const [classes, subjects] = await Promise.all([dbGetAll('classes'), dbGetAll('subjects')]);
+  showModal(`<div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Schedule Exam</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Exam Name *</label><input id="ex-name" value="${prefill.name||''}" placeholder="e.g. Mid-Term 2025"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Class *</label><select id="ex-cls">
+          <option value="">Select</option>
+          ${classes.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}
+        </select></div>
+        <div class="form-group"><label>Subject *</label><select id="ex-subj">
+          <option value="">Select</option>
+          ${subjects.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}
+        </select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date *</label><input type="date" id="ex-date" value="${prefill.date||''}"></div>
+        <div class="form-group"><label>Time</label><input type="time" id="ex-time" value="${prefill.time||'08:00'}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Duration (mins)</label><input type="number" id="ex-dur" value="${prefill.durationMinutes||120}"></div>
+        <div class="form-group"><label>Room</label><input id="ex-room" value="${prefill.room||''}"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveExam()">Schedule</button>
+    </div>
+  </div>`);
+}
+
+async function saveExam() {
+  const name = document.getElementById('ex-name').value.trim();
+  const classId = document.getElementById('ex-cls').value;
+  const subjectId = document.getElementById('ex-subj').value;
+  const date = document.getElementById('ex-date').value;
+  if (!name||!classId||!subjectId||!date) { toast('Please fill required fields','error'); return; }
+  await dbAdd('exams', { name, classId:parseInt(classId), subjectId:parseInt(subjectId), date, time:document.getElementById('ex-time').value, durationMinutes:parseInt(document.getElementById('ex-dur').value)||120, room:document.getElementById('ex-room').value });
+  toast('Exam scheduled'); closeModal(); renderExams();
+}
+
+async function deleteExam(id) {
+  if (!confirm('Delete this exam?')) return;
+  await dbDelete('exams', id); toast('Deleted'); renderExams();
+}
+
+async function showGradesModal(examId) {
+  const [exam, classes, subjects, students, grades] = await Promise.all([
+    dbGet('exams', examId), dbGetAll('classes'), dbGetAll('subjects'), dbGetAll('students'), dbGetByIndex('grades','examId',examId)
+  ]);
+  const cls = classes.find(c=>c.id===exam.classId);
+  const subj = subjects.find(s=>s.id===exam.subjectId);
+  const classStudents = students.filter(s=>s.classId===exam.classId&&s.isActive);
+  const gradeMap = {};
+  grades.forEach(g=>{ gradeMap[g.studentId]=g; });
+  showModal(`<div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title">Grades – ${exam.name}</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-info" style="margin-bottom:16px">${subj?.name||'?'} · ${cls?.name||'?'} · ${exam.date||'—'}</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Student</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th><th>Remarks</th></tr></thead>
+          <tbody>
+            ${classStudents.map(s=>{
+              const g = gradeMap[s.id]||{};
+              return `<tr>
+                <td style="font-weight:500">${s.firstName} ${s.lastName}</td>
+                <td><input type="number" id="gm-${s.id}" value="${g.marksObtained||''}" style="width:70px;padding:4px 8px;border:1px solid var(--border-dark);border-radius:6px;font-family:inherit" min="0"></td>
+                <td><input type="number" id="gt-${s.id}" value="${g.totalMarks||100}" style="width:70px;padding:4px 8px;border:1px solid var(--border-dark);border-radius:6px;font-family:inherit" min="0"></td>
+                <td><input id="gg-${s.id}" value="${g.gradeLetter||''}" style="width:50px;padding:4px 8px;border:1px solid var(--border-dark);border-radius:6px;font-family:inherit" placeholder="A+"></td>
+                <td><input id="gr-${s.id}" value="${g.remarks||''}" style="width:100%;padding:4px 8px;border:1px solid var(--border-dark);border-radius:6px;font-family:inherit"></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveGrades(${examId},[${classStudents.map(s=>s.id).join(',')}],${exam.subjectId})">Save Grades</button>
+    </div>
+  </div>`);
+}
+
+async function saveGrades(examId, studentIds, subjectId) {
+  for (const sid of studentIds) {
+    const marks = document.getElementById(`gm-${sid}`)?.value;
+    if (marks==='') continue;
+    const existing = await dbGetAll('grades');
+    const rec = existing.find(g=>g.examId===examId&&g.studentId===sid);
+    const data = { examId, studentId:sid, subjectId, marksObtained:parseFloat(marks)||0, totalMarks:parseFloat(document.getElementById(`gt-${sid}`).value)||100, gradeLetter:document.getElementById(`gg-${sid}`).value, remarks:document.getElementById(`gr-${sid}`).value };
+    if (rec) { data.id=rec.id; await dbPut('grades', data); }
+    else { await dbAdd('grades', data); }
+  }
+  toast('Grades saved'); closeModal(); renderExams();
+}
+
+// ============================================================
+// FEES
+// ============================================================
+let feeSearch='', feeFilter='all';
+async function renderFees() {
+  const [fees, students, feeTypes, classes] = await Promise.all([dbGetAll('studentFees'), dbGetAll('students'), dbGetAll('feeTypes'), dbGetAll('classes')]);
+  const totalCollected = fees.filter(f=>f.status==='Paid').reduce((a,f)=>a+f.amountPaid,0);
+  const totalPending = fees.filter(f=>f.status!=='Paid').reduce((a,f)=>a+(f.assignedAmount-f.amountPaid),0);
+  let filtered = fees;
+  if (feeFilter!=='all') filtered = filtered.filter(f=>f.status===feeFilter);
+  if (feeSearch) {
+    const q = feeSearch.toLowerCase();
+    filtered = filtered.filter(f=>{
+      const s = students.find(st=>st.id===f.studentId);
+      return s && (s.firstName+' '+s.lastName).toLowerCase().includes(q);
+    });
+  }
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Fee Management</div>
+      <div class="module-actions">
+        <button class="btn-primary" onclick="showAddFeeTypeModal()">+ Fee Type</button>
+        <button class="btn-gold" onclick="showAssignFeeModal()">Assign Fee</button>
+      </div>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+      <div class="stat-card teal" style="padding:16px">
+        <div class="stat-number" style="font-size:22px">${totalCollected.toLocaleString()} SOS</div>
+        <div class="stat-label">Collected</div>
+      </div>
+      <div class="stat-card rose" style="padding:16px">
+        <div class="stat-number" style="font-size:22px">${totalPending.toLocaleString()} SOS</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card gold" style="padding:16px">
+        <div class="stat-number" style="font-size:22px">${feeTypes.length}</div>
+        <div class="stat-label">Fee Types</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+      <div class="pill-filter" style="margin:0">
+        ${['all','Paid','Pending'].map(f=>`<span class="pill ${feeFilter===f?'active':''}" onclick="feeFilter='${f}';renderFees()">${f==='all'?'All':f}</span>`).join('')}
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search student..." value="${feeSearch}" oninput="feeSearch=this.value;renderFees()">
+        <button>🔍</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Student</th><th>Class</th><th>Fee Type</th><th>Assigned</th><th>Paid</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${filtered.map(f=>{
+            const stu = students.find(s=>s.id===f.studentId);
+            const ft = feeTypes.find(t=>t.id===f.feeTypeId);
+            const cls = stu?classes.find(c=>c.id===stu.classId):null;
+            return `<tr>
+              <td style="font-weight:500">${stu?stu.firstName+' '+stu.lastName:'—'}</td>
+              <td>${cls?.name||'—'}</td>
+              <td>${ft?.name||'—'}</td>
+              <td style="font-family:'IBM Plex Mono',monospace">${f.assignedAmount?.toLocaleString()||0}</td>
+              <td style="font-family:'IBM Plex Mono',monospace">${f.amountPaid?.toLocaleString()||0}</td>
+              <td><span style="font-family:'IBM Plex Mono',monospace;font-size:11px">${f.dueDate||'—'}</span></td>
+              <td><span class="badge ${f.status==='Paid'?'badge-green':f.status==='Pending'?'badge-yellow':'badge-red'}">${f.status||'?'}</span></td>
+              <td><div class="action-btns">
+                ${f.status!=='Paid'?`<button class="btn-primary btn-sm" onclick="showPaymentModal(${f.id})">Pay</button>`:''}
+                ${f.receiptNumber?`<button class="btn-secondary btn-sm" onclick="showReceipt(${f.id})">Receipt</button>`:''}
+                <button class="btn-danger btn-sm" onclick="deleteFee(${f.id})">Del</button>
+              </div></td>
+            </tr>`;
+          }).join('')}
+          ${filtered.length===0?`<tr><td colspan="8"><div class="empty-state">No fee records found</div></td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function showAddFeeTypeModal() {
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Fee Type</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Fee Type Name *</label><input id="ft-name" placeholder="e.g. Tuition Fee"></div>
+      <div class="form-group"><label>Default Amount (SOS)</label><input type="number" id="ft-amt" placeholder="0"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveFeeType()">Save</button>
+    </div>
+  </div>`);
+}
+
+async function saveFeeType() {
+  const name = document.getElementById('ft-name').value.trim();
+  if (!name) { toast('Name required','error'); return; }
+  await dbAdd('feeTypes', { name, defaultAmount:parseFloat(document.getElementById('ft-amt').value)||0 });
+  toast('Fee type added'); closeModal(); renderFees();
+}
+
+async function showAssignFeeModal() {
+  const [students, feeTypes, classes] = await Promise.all([dbGetAll('students'), dbGetAll('feeTypes'), dbGetAll('classes')]);
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">Assign Fee</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Student *</label><select id="af-stu">
+        <option value="">Select Student</option>
+        ${students.filter(s=>s.isActive).map(s=>{const c=classes.find(cl=>cl.id===s.classId);return`<option value="${s.id}">${s.firstName} ${s.lastName} – ${c?.name||'?'}</option>`;}).join('')}
+      </select></div>
+      <div class="form-group"><label>Fee Type *</label><select id="af-ft">
+        <option value="">Select Fee Type</option>
+        ${feeTypes.map(f=>`<option value="${f.id}">${f.name} (${f.defaultAmount?.toLocaleString()||0} SOS)</option>`).join('')}
+      </select></div>
+      <div class="form-group"><label>Amount (SOS) *</label><input type="number" id="af-amt" placeholder="0"></div>
+      <div class="form-group"><label>Due Date</label><input type="date" id="af-due"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="assignFee()">Assign</button>
+    </div>
+  </div>`);
+}
+
+async function assignFee() {
+  const stuId = document.getElementById('af-stu').value;
+  const ftId = document.getElementById('af-ft').value;
+  const amt = document.getElementById('af-amt').value;
+  if (!stuId||!ftId||!amt) { toast('Fill all required fields','error'); return; }
+  await dbAdd('studentFees', { studentId:parseInt(stuId), feeTypeId:parseInt(ftId), assignedAmount:parseFloat(amt), amountPaid:0, dueDate:document.getElementById('af-due').value, paymentDate:null, receiptNumber:null, status:'Pending', remarks:'' });
+  toast('Fee assigned'); closeModal(); renderFees();
+}
+
+async function showPaymentModal(feeId) {
+  const fee = await dbGet('studentFees', feeId);
+  const remaining = fee.assignedAmount - fee.amountPaid;
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">Record Payment</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="alert alert-warn">Outstanding: <strong>${remaining.toLocaleString()} SOS</strong></div>
+      <div class="form-group"><label>Amount Paid (SOS) *</label><input type="number" id="pay-amt" value="${remaining}" max="${remaining}"></div>
+      <div class="form-group"><label>Payment Date *</label><input type="date" id="pay-date" value="${new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group"><label>Receipt Number</label><input id="pay-rcpt" value="RCP-${Date.now().toString().slice(-6)}" placeholder="Auto-generated"></div>
+      <div class="form-group"><label>Remarks</label><input id="pay-rem" placeholder="Optional"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="processPayment(${feeId})">Process Payment</button>
+    </div>
+  </div>`);
+}
+
+async function processPayment(feeId) {
+  const fee = await dbGet('studentFees', feeId);
+  const paid = parseFloat(document.getElementById('pay-amt').value)||0;
+  const newPaid = fee.amountPaid + paid;
+  const status = newPaid >= fee.assignedAmount ? 'Paid' : 'Pending';
+  await dbPut('studentFees', { ...fee, amountPaid:newPaid, paymentDate:document.getElementById('pay-date').value, receiptNumber:document.getElementById('pay-rcpt').value, status, remarks:document.getElementById('pay-rem').value });
+  toast('Payment recorded'); closeModal(); renderFees();
+}
+
+async function showReceipt(feeId) {
+  const [fee, students, feeTypes] = await Promise.all([dbGet('studentFees',feeId), dbGetAll('students'), dbGetAll('feeTypes')]);
+  const stu = students.find(s=>s.id===fee.studentId);
+  const ft = feeTypes.find(t=>t.id===fee.feeTypeId);
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">Fee Receipt</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="receipt">
+        <div class="receipt-header">
+          <div style="font-size:22px;font-family:'Amiri',serif;color:var(--gold)">🕌 AL-IRSHAAD</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">Secondary School – Fee Receipt</div>
+        </div>
+        <div class="receipt-row"><span>Receipt No:</span><span><strong>${fee.receiptNumber||'—'}</strong></span></div>
+        <div class="receipt-row"><span>Date:</span><span>${fee.paymentDate||'—'}</span></div>
+        <div class="receipt-row"><span>Student:</span><span>${stu?stu.firstName+' '+stu.lastName:'—'}</span></div>
+        <div class="receipt-row"><span>Roll No:</span><span>${stu?.rollNumber||'—'}</span></div>
+        <div class="receipt-row" style="border-top:1px dashed #ddd;margin-top:8px;padding-top:8px"><span>Fee Type:</span><span>${ft?.name||'—'}</span></div>
+        <div class="receipt-row"><span>Amount Due:</span><span>${fee.assignedAmount?.toLocaleString()||0} SOS</span></div>
+        <div class="receipt-row receipt-total"><span>Amount Paid:</span><span>${fee.amountPaid?.toLocaleString()||0} SOS</span></div>
+        <div style="text-align:center;margin-top:20px;font-size:11px;color:#aaa">Thank you for your payment</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Close</button>
+      <button class="btn-gold" onclick="window.print()">🖨 Print Receipt</button>
+    </div>
+  </div>`);
+}
+
+async function deleteFee(id) {
+  if (!confirm('Delete this fee record?')) return;
+  await dbDelete('studentFees', id); toast('Deleted'); renderFees();
+}
+
+// ============================================================
+// LIBRARY
+// ============================================================
+let libSearch='', libFilter='all';
+async function renderLibrary() {
+  const [books, borrowed, students, teachers] = await Promise.all([dbGetAll('books'), dbGetAll('borrowedBooks'), dbGetAll('students'), dbGetAll('teachers')]);
+  const today = new Date().toISOString().split('T')[0];
+  let filteredBooks = books;
+  if (libFilter==='available') filteredBooks = filteredBooks.filter(b=>b.availableCopies>0);
+  if (libFilter==='unavailable') filteredBooks = filteredBooks.filter(b=>b.availableCopies===0);
+  if (libSearch) filteredBooks = filteredBooks.filter(b=>(b.title+b.author+b.isbn).toLowerCase().includes(libSearch.toLowerCase()));
+  const activeBorrowed = borrowed.filter(b=>!b.returnedDate);
+  const overdue = borrowed.filter(b=>!b.returnedDate&&b.dueDate<today);
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Library</div>
+      <div class="module-actions">
+        <button class="btn-primary" onclick="showAddBookModal()">+ Add Book</button>
+        <button class="btn-gold" onclick="showIssueBookModal()">Issue Book</button>
+      </div>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+      <div class="stat-card teal" style="padding:14px"><div class="stat-number" style="font-size:20px">${books.length}</div><div class="stat-label">Total Books</div></div>
+      <div class="stat-card green" style="padding:14px"><div class="stat-number" style="font-size:20px">${activeBorrowed.length}</div><div class="stat-label">Borrowed</div></div>
+      <div class="stat-card rose" style="padding:14px"><div class="stat-number" style="font-size:20px">${overdue.length}</div><div class="stat-label">Overdue</div></div>
+      <div class="stat-card gold" style="padding:14px"><div class="stat-number" style="font-size:20px">${books.reduce((a,b)=>a+b.availableCopies,0)}</div><div class="stat-label">Available</div></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+      <div class="pill-filter" style="margin:0">
+        ${['all','available','unavailable'].map(f=>`<span class="pill ${libFilter===f?'active':''}" onclick="libFilter='${f}';renderLibrary()">${f}</span>`).join('')}
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search title, author, ISBN..." value="${libSearch}" oninput="libSearch=this.value;renderLibrary()">
+        <button>🔍</button>
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-bottom:24px">
+      <table>
+        <thead><tr><th>Title</th><th>Author</th><th>ISBN</th><th>Category</th><th>Total</th><th>Available</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${filteredBooks.map(b=>`<tr>
+            <td style="font-weight:500">${b.title}</td>
+            <td>${b.author}</td>
+            <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">${b.isbn||'—'}</td>
+            <td><span class="badge badge-blue">${b.category||'—'}</span></td>
+            <td style="text-align:center">${b.totalCopies}</td>
+            <td style="text-align:center"><span class="badge ${b.availableCopies>0?'badge-green':'badge-red'}">${b.availableCopies}</span></td>
+            <td><div class="action-btns">
+              <button class="btn-secondary btn-sm" onclick="showEditBookModal(${b.id})">Edit</button>
+              <button class="btn-danger btn-sm" onclick="deleteBook(${b.id})">Del</button>
+            </div></td>
+          </tr>`).join('')}
+          ${filteredBooks.length===0?`<tr><td colspan="7"><div class="empty-state">No books found</div></td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+    <div style="font-weight:600;font-size:15px;margin-bottom:12px">Currently Borrowed Books</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Book</th><th>Borrower</th><th>Borrowed</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          ${activeBorrowed.map(b=>{
+            const book=books.find(bk=>bk.id===b.bookId);
+            const person=b.borrowerType==='student'?students.find(s=>s.id===b.borrowerId):teachers.find(t=>t.id===b.borrowerId);
+            const isOverdue=b.dueDate<today;
+            return `<tr>
+              <td style="font-weight:500">${book?.title||'?'}</td>
+              <td>${person?person.firstName+' '+person.lastName:'?'} <span style="font-size:10px;color:#aaa">(${b.borrowerType})</span></td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">${b.borrowDate}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">${b.dueDate}</td>
+              <td><span class="badge ${isOverdue?'badge-red':'badge-green'}">${isOverdue?'Overdue':'Active'}</span></td>
+              <td><button class="btn-primary btn-sm" onclick="returnBook(${b.id},${b.bookId})">Return</button></td>
+            </tr>`;
+          }).join('')}
+          ${activeBorrowed.length===0?`<tr><td colspan="6"><div class="empty-state">No books currently borrowed</div></td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function showAddBookModal(prefill={}) {
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">${prefill.id?'Edit':'Add'} Book</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Title *</label><input id="bk-title" value="${prefill.title||''}"></div>
+      <div class="form-group"><label>Author *</label><input id="bk-auth" value="${prefill.author||''}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>ISBN</label><input id="bk-isbn" value="${prefill.isbn||''}"></div>
+        <div class="form-group"><label>Category</label><input id="bk-cat" value="${prefill.category||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Publisher</label><input id="bk-pub" value="${prefill.publisher||''}"></div>
+        <div class="form-group"><label>Publication Year</label><input type="number" id="bk-yr" value="${prefill.publicationYear||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Total Copies *</label><input type="number" id="bk-tot" value="${prefill.totalCopies||1}"></div>
+        <div class="form-group"><label>Available Copies *</label><input type="number" id="bk-avail" value="${prefill.availableCopies||1}"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveBook(${prefill.id||'null'})">Save</button>
+    </div>
+  </div>`);
+}
+
+async function showEditBookModal(id) { const b=await dbGet('books',id); if(b) showAddBookModal(b); }
+
+async function saveBook(id) {
+  const title = document.getElementById('bk-title').value.trim();
+  const author = document.getElementById('bk-auth').value.trim();
+  if (!title||!author) { toast('Title and author required','error'); return; }
+  const data = { title, author, isbn:document.getElementById('bk-isbn').value, category:document.getElementById('bk-cat').value, publisher:document.getElementById('bk-pub').value, publicationYear:parseInt(document.getElementById('bk-yr').value)||null, totalCopies:parseInt(document.getElementById('bk-tot').value)||1, availableCopies:parseInt(document.getElementById('bk-avail').value)||1 };
+  if (id) { data.id=id; await dbPut('books',data); toast('Book updated'); }
+  else { await dbAdd('books',data); toast('Book added'); }
+  closeModal(); renderLibrary();
+}
+
+async function deleteBook(id) { if(!confirm('Delete book?'))return; await dbDelete('books',id); toast('Deleted'); renderLibrary(); }
+
+async function showIssueBookModal() {
+  const [books, students] = await Promise.all([dbGetAll('books'), dbGetAll('students')]);
+  const avail = books.filter(b=>b.availableCopies>0);
+  const due = new Date(); due.setDate(due.getDate()+14);
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">Issue Book</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Book *</label><select id="ib-book">
+        <option value="">Select Book</option>
+        ${avail.map(b=>`<option value="${b.id}">${b.title} (${b.availableCopies} avail)</option>`).join('')}
+      </select></div>
+      <div class="form-group"><label>Borrower *</label><select id="ib-bor">
+        <option value="">Select Student</option>
+        ${students.filter(s=>s.isActive).map(s=>`<option value="${s.id}">${s.firstName} ${s.lastName}</option>`).join('')}
+      </select></div>
+      <div class="form-row">
+        <div class="form-group"><label>Borrow Date</label><input type="date" id="ib-bdate" value="${new Date().toISOString().split('T')[0]}"></div>
+        <div class="form-group"><label>Due Date</label><input type="date" id="ib-due" value="${due.toISOString().split('T')[0]}"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="issueBook()">Issue</button>
+    </div>
+  </div>`);
+}
+
+async function issueBook() {
+  const bookId = parseInt(document.getElementById('ib-book').value);
+  const borrowerId = parseInt(document.getElementById('ib-bor').value);
+  if (!bookId||!borrowerId) { toast('Select book and borrower','error'); return; }
+  const book = await dbGet('books', bookId);
+  if (book.availableCopies<=0) { toast('No copies available','error'); return; }
+  await dbAdd('borrowedBooks', { bookId, borrowerId, borrowerType:'student', borrowDate:document.getElementById('ib-bdate').value, dueDate:document.getElementById('ib-due').value, returnedDate:null });
+  await dbPut('books', {...book, availableCopies:book.availableCopies-1});
+  toast('Book issued'); closeModal(); renderLibrary();
+}
+
+async function returnBook(borrowId, bookId) {
+  const [borrow, book] = await Promise.all([dbGet('borrowedBooks',borrowId), dbGet('books',bookId)]);
+  await dbPut('borrowedBooks', {...borrow, returnedDate:new Date().toISOString().split('T')[0]});
+  await dbPut('books', {...book, availableCopies:book.availableCopies+1});
+  toast('Book returned'); renderLibrary();
+}
+
+// ============================================================
+// BUS ROUTES
+// ============================================================
+async function renderBus() {
+  const [routes, students] = await Promise.all([dbGetAll('busRoutes'), dbGetAll('students')]);
+  document.getElementById('content').innerHTML = `
+    <div class="module-header">
+      <div class="module-title">Bus Routes</div>
+      <div class="module-actions">
+        <button class="btn-primary" onclick="showAddBusModal()">+ Add Route</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+      ${routes.map(r=>{
+        const assigned = students.filter(s=>s.busRouteId===r.id);
+        return `<div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:start">
+            <div>
+              <div style="font-size:16px;font-weight:700;margin-bottom:4px">🚌 ${r.routeName}</div>
+              <div style="font-size:12px;color:#888">${r.vehicleNumber||'—'}</div>
+            </div>
+            <div class="action-btns">
+              <button class="btn-secondary btn-sm" onclick="showEditBusModal(${r.id})">Edit</button>
+              <button class="btn-danger btn-sm" onclick="deleteBus(${r.id})">Del</button>
+            </div>
+          </div>
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+            <div class="info-item"><label>Driver</label><span>${r.driverName||'—'}</span></div>
+            <div class="info-item"><label>Contact</label><span>${r.driverPhone||'—'}</span></div>
+            <div class="info-item"><label>Capacity</label><span>${r.capacity||'—'}</span></div>
+            <div class="info-item"><label>Students</label><span>${assigned.length}</span></div>
+          </div>
+          ${r.stops?.length?`<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:6px">Stops</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">${r.stops.map(s=>`<span class="badge badge-blue">${s}</span>`).join('')}</div></div>`:''}
+          ${assigned.length?`<div style="margin-top:12px"><div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:6px">Students (${assigned.length})</div>
+            <div style="font-size:12px;color:#666">${assigned.map(s=>s.firstName+' '+s.lastName).join(', ')}</div></div>`:''}
+        </div>`;
+      }).join('')}
+      ${routes.length===0?'<div class="empty-state" style="padding:40px">No bus routes defined</div>':''}
+    </div>
+  `;
+}
+
+function showAddBusModal(prefill={}) {
+  showModal(`<div class="modal">
+    <div class="modal-header"><div class="modal-title">${prefill.id?'Edit':'Add'} Bus Route</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Route Name *</label><input id="bus-name" value="${prefill.routeName||''}" placeholder="e.g. Route A – East"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Driver Name</label><input id="bus-dr" value="${prefill.driverName||''}"></div>
+        <div class="form-group"><label>Driver Phone</label><input id="bus-dp" value="${prefill.driverPhone||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Vehicle Number</label><input id="bus-veh" value="${prefill.vehicleNumber||''}"></div>
+        <div class="form-group"><label>Capacity</label><input type="number" id="bus-cap" value="${prefill.capacity||35}"></div>
+      </div>
+      <div class="form-group"><label>Stops (comma-separated)</label><input id="bus-stops" value="${(prefill.stops||[]).join(', ')}" placeholder="Stop 1, Stop 2, School"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveBus(${prefill.id||'null'})">Save</button>
+    </div>
+  </div>`);
+}
+
+async function showEditBusModal(id) { const r=await dbGet('busRoutes',id); if(r) showAddBusModal(r); }
+
+async function saveBus(id) {
+  const name = document.getElementById('bus-name').value.trim();
+  if (!name) { toast('Route name required','error'); return; }
+  const stops = document.getElementById('bus-stops').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const data = { routeName:name, driverName:document.getElementById('bus-dr').value, driverPhone:document.getElementById('bus-dp').value, vehicleNumber:document.getElementById('bus-veh').value, capacity:parseInt(document.getElementById('bus-cap').value)||35, stops };
+  if (id) { data.id=id; await dbPut('busRoutes',data); toast('Route updated'); }
+  else { await dbAdd('busRoutes',data); toast('Route added'); }
+  closeModal(); renderBus();
+}
+
+async function deleteBus(id) { if(!confirm('Delete route?'))return; await dbDelete('busRoutes',id); toast('Deleted'); renderBus(); }
+
+// ============================================================
+// REPORTS
+// ============================================================
+async function renderReports() {
+  document.getElementById('content').innerHTML = `
+    <div class="module-header"><div class="module-title">Reports</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:28px">
+      ${[
+        {icon:'📋',label:'Student Report Card',desc:'Generate full report card with grades',fn:'generateReportCard'},
+        {icon:'📊',label:'Attendance Report',desc:'Monthly/daily attendance summary',fn:'generateAttendanceReport'},
+        {icon:'💰',label:'Fee Collection Report',desc:'Collected vs pending fees by class',fn:'generateFeeReport'},
+        {icon:'📚',label:'Library Report',desc:'Borrowed and overdue books',fn:'generateLibraryReport'},
+      ].map(r=>`<div class="section-card" style="cursor:pointer" onclick="${r.fn}()">
+        <div style="font-size:32px;margin-bottom:8px">${r.icon}</div>
+        <div style="font-weight:600;margin-bottom:4px">${r.label}</div>
+        <div style="font-size:12px;color:#888">${r.desc}</div>
+      </div>`).join('')}
+    </div>
+    <div id="report-output"></div>
+  `;
+}
+
+async function generateReportCard() {
+  const [students, grades, exams, subjects, classes] = await Promise.all([dbGetAll('students'), dbGetAll('grades'), dbGetAll('exams'), dbGetAll('subjects'), dbGetAll('classes')]);
+  const out = document.getElementById('report-output');
+  out.innerHTML = `
+    <div class="section-card">
+      <div class="form-row">
+        <div class="form-group"><label>Select Student</label><select id="rc-stu">
+          ${students.map(s=>`<option value="${s.id}">${s.firstName} ${s.lastName}</option>`).join('')}
+        </select></div>
+        <div class="form-group"><label>Exam Name</label><input id="rc-exam" value="Mid-Term 2025" placeholder="Filter by exam name"></div>
+      </div>
+      <button class="btn-primary" onclick="generateRCOutput()">Generate Report Card</button>
+    </div>
+    <div id="rc-out" style="margin-top:16px"></div>
+  `;
+}
+
+async function generateRCOutput() {
+  const sid = parseInt(document.getElementById('rc-stu').value);
+  const examFilter = document.getElementById('rc-exam').value.toLowerCase();
+  const [student, grades, exams, subjects, classes] = await Promise.all([
+    dbGet('students',sid), dbGetAll('grades'), dbGetAll('exams'), dbGetAll('subjects'), dbGetAll('classes')
+  ]);
+  const stuGrades = grades.filter(g=>g.studentId===sid);
+  const relExams = exams.filter(e=>!examFilter||e.name.toLowerCase().includes(examFilter));
+  const rows = relExams.map(e=>{
+    const g = stuGrades.find(gr=>gr.examId===e.id);
+    const subj = subjects.find(s=>s.id===e.subjectId);
+    if (!g) return null;
+    return { subject:subj?.name||'?', marks:g.marksObtained, total:g.totalMarks, pct:Math.round(g.marksObtained/g.totalMarks*100), grade:g.gradeLetter };
+  }).filter(Boolean);
+  const cls = classes.find(c=>c.id===student.classId);
+  const totalMarks = rows.reduce((a,r)=>a+r.marks,0);
+  const totalMax = rows.reduce((a,r)=>a+r.total,0);
+  const pct = totalMax ? Math.round(totalMarks/totalMax*100) : 0;
+  document.getElementById('rc-out').innerHTML = `
+    <div class="report-card">
+      <div class="rc-header">
+        <div class="rc-logo">🕌</div>
+        <div class="rc-school-info">
+          <h1>AL-IRSHAAD Secondary School</h1>
+          <p>Student Report Card · Academic Year 2024–2025</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div><div class="info-item"><label>Student Name</label><span>${student.firstName} ${student.lastName}</span></div></div>
+        <div><div class="info-item"><label>Roll Number</label><span>${student.rollNumber||'—'}</span></div></div>
+        <div><div class="info-item"><label>Class</label><span>${cls?.name||'—'}</span></div></div>
+        <div><div class="info-item"><label>Exam Period</label><span>${document.getElementById('rc-exam').value||'All'}</span></div></div>
+      </div>
+      <div class="table-wrap rc-table">
+        <table>
+          <thead><tr><th>Subject</th><th>Marks Obtained</th><th>Total Marks</th><th>Percentage</th><th>Grade</th></tr></thead>
+          <tbody>
+            ${rows.map(r=>`<tr>
+              <td style="font-weight:500">${r.subject}</td>
+              <td style="text-align:center;font-family:'IBM Plex Mono',monospace">${r.marks}</td>
+              <td style="text-align:center;font-family:'IBM Plex Mono',monospace">${r.total}</td>
+              <td style="text-align:center">${r.pct}%</td>
+              <td style="text-align:center"><span class="badge ${r.pct>=80?'badge-green':r.pct>=60?'badge-yellow':'badge-red'}">${r.grade||'—'}</span></td>
+            </tr>`).join('')}
+            ${rows.length===0?`<tr><td colspan="5" style="text-align:center;padding:20px;color:#aaa">No grades found for this selection</td></tr>`:''}
+          </tbody>
+        </table>
+      </div>
+      ${rows.length?`<div class="rc-summary">
+        <div class="rc-sum-item"><div class="rc-sum-val">${totalMarks}/${totalMax}</div><div class="rc-sum-label">Total Marks</div></div>
+        <div class="rc-sum-item"><div class="rc-sum-val">${pct}%</div><div class="rc-sum-label">Overall %</div></div>
+        <div class="rc-sum-item"><div class="rc-sum-val">${pct>=80?'A':pct>=70?'B':pct>=60?'C':pct>=50?'D':'F'}</div><div class="rc-sum-label">Overall Grade</div></div>
+      </div>`:''}
+      <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:32px">
+        <div style="border-top:1px solid var(--ink);padding-top:6px;font-size:12px;text-align:center;color:#888">Class Teacher Signature</div>
+        <div style="border-top:1px solid var(--ink);padding-top:6px;font-size:12px;text-align:center;color:#888">Principal Signature</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px">
+      <button class="btn-gold no-print" onclick="window.print()">🖨 Print Report Card</button>
+    </div>
+  `;
+}
+
+async function generateAttendanceReport() {
+  const [students, attendance, classes] = await Promise.all([dbGetAll('students'), dbGetAll('attendance'), dbGetAll('classes')]);
+  const out = document.getElementById('report-output');
+  const stuAtt = attendance.filter(a=>a.entityType==='student');
+  const summary = students.map(s=>{
+    const recs = stuAtt.filter(a=>a.entityId===s.id);
+    const present = recs.filter(a=>a.status==='Present').length;
+    const absent = recs.filter(a=>a.status==='Absent').length;
+    const late = recs.filter(a=>a.status==='Late').length;
+    const total = recs.length;
+    const pct = total ? Math.round(present/total*100) : 0;
+    return { student:s, present, absent, late, total, pct, cls:classes.find(c=>c.id===s.classId) };
+  }).filter(s=>s.total>0).sort((a,b)=>a.pct-b.pct);
+  out.innerHTML = `
+    <div class="section-card">
+      <div class="section-card-title">📊 Attendance Summary Report</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Student</th><th>Class</th><th>Present</th><th>Absent</th><th>Late</th><th>Total Days</th><th>Attendance %</th></tr></thead>
+          <tbody>
+            ${summary.map(s=>`<tr>
+              <td style="font-weight:500">${s.student.firstName} ${s.student.lastName}</td>
+              <td>${s.cls?.name||'—'}</td>
+              <td style="text-align:center;color:#2d8a4e;font-weight:600">${s.present}</td>
+              <td style="text-align:center;color:var(--rose);font-weight:600">${s.absent}</td>
+              <td style="text-align:center;color:var(--gold-dark)">${s.late}</td>
+              <td style="text-align:center;font-family:'IBM Plex Mono',monospace">${s.total}</td>
+              <td><div style="display:flex;align-items:center;gap:8px">
+                <div class="fee-bar-wrap" style="flex:1"><div class="fee-bar-fill" style="width:${s.pct}%;background:${s.pct<75?'var(--rose)':s.pct<90?'var(--gold)':'var(--teal)'}"></div></div>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;min-width:35px">${s.pct}%</span>
+              </div></td>
+            </tr>`).join('')}
+            ${summary.length===0?`<tr><td colspan="7"><div class="empty-state">No attendance records found</div></td></tr>`:''}
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-gold no-print" style="margin-top:12px" onclick="window.print()">🖨 Print Report</button>
+    </div>
+  `;
+}
+
+async function generateFeeReport() {
+  const [fees, students, feeTypes, classes] = await Promise.all([dbGetAll('studentFees'), dbGetAll('students'), dbGetAll('feeTypes'), dbGetAll('classes')]);
+  const totalCollected = fees.filter(f=>f.status==='Paid').reduce((a,f)=>a+f.amountPaid,0);
+  const totalPending = fees.filter(f=>f.status!=='Paid').reduce((a,f)=>a+(f.assignedAmount-f.amountPaid),0);
+  const byClass = classes.map(c=>{
+    const classStudents = students.filter(s=>s.classId===c.id);
+    const classFees = fees.filter(f=>classStudents.some(s=>s.id===f.studentId));
+    const collected = classFees.filter(f=>f.status==='Paid').reduce((a,f)=>a+f.amountPaid,0);
+    const pending = classFees.filter(f=>f.status!=='Paid').reduce((a,f)=>a+(f.assignedAmount-f.amountPaid),0);
+    return { cls:c, collected, pending };
+  });
+  document.getElementById('report-output').innerHTML = `
+    <div class="section-card">
+      <div class="section-card-title">💰 Fee Collection Report</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:var(--teal-pale);padding:16px;border-radius:8px;text-align:center">
+          <div style="font-size:24px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--teal)">${totalCollected.toLocaleString()} SOS</div>
+          <div style="font-size:12px;color:#666;margin-top:4px">Total Collected</div>
+        </div>
+        <div style="background:var(--rose-pale);padding:16px;border-radius:8px;text-align:center">
+          <div style="font-size:24px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--rose)">${totalPending.toLocaleString()} SOS</div>
+          <div style="font-size:12px;color:#666;margin-top:4px">Total Pending</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Collected (SOS)</th><th>Pending (SOS)</th><th>Collection Rate</th></tr></thead>
+          <tbody>
+            ${byClass.map(r=>{
+              const total = r.collected+r.pending;
+              const pct = total ? Math.round(r.collected/total*100) : 0;
+              return `<tr>
+                <td style="font-weight:500">${r.cls.name}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;color:#2d8a4e">${r.collected.toLocaleString()}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;color:var(--rose)">${r.pending.toLocaleString()}</td>
+                <td><div style="display:flex;align-items:center;gap:8px">
+                  <div class="fee-bar-wrap" style="flex:1"><div class="fee-bar-fill" style="width:${pct}%"></div></div>
+                  <span style="font-size:12px;min-width:35px;font-family:'IBM Plex Mono',monospace">${pct}%</span>
+                </div></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-gold no-print" style="margin-top:12px" onclick="window.print()">🖨 Print Report</button>
+    </div>
+  `;
+}
+
+async function generateLibraryReport() {
+  const [books, borrowed, students] = await Promise.all([dbGetAll('books'), dbGetAll('borrowedBooks'), dbGetAll('students')]);
+  const today = new Date().toISOString().split('T')[0];
+  const active = borrowed.filter(b=>!b.returnedDate);
+  const overdue = active.filter(b=>b.dueDate<today);
+  document.getElementById('report-output').innerHTML = `
+    <div class="section-card">
+      <div class="section-card-title">📚 Library Report</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+        <div style="background:var(--parchment);padding:14px;border-radius:8px;text-align:center">
+          <div style="font-size:28px;font-weight:700;font-family:'IBM Plex Mono',monospace">${books.length}</div>
+          <div style="font-size:11px;color:#888">Total Books</div>
+        </div>
+        <div style="background:var(--teal-pale);padding:14px;border-radius:8px;text-align:center">
+          <div style="font-size:28px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--teal)">${active.length}</div>
+          <div style="font-size:11px;color:#888">Currently Borrowed</div>
+        </div>
+        <div style="background:var(--rose-pale);padding:14px;border-radius:8px;text-align:center">
+          <div style="font-size:28px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--rose)">${overdue.length}</div>
+          <div style="font-size:11px;color:#888">Overdue</div>
+        </div>
+      </div>
+      ${overdue.length?`<div style="margin-bottom:16px">
+        <div style="font-weight:600;margin-bottom:8px;color:var(--rose)">⚠ Overdue Books</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Book</th><th>Borrower</th><th>Due Date</th><th>Days Overdue</th></tr></thead>
+            <tbody>
+              ${overdue.map(b=>{
+                const book=books.find(bk=>bk.id===b.bookId);
+                const stu=students.find(s=>s.id===b.borrowerId);
+                const days=Math.floor((new Date()-new Date(b.dueDate))/(1000*86400));
+                return `<tr>
+                  <td style="font-weight:500">${book?.title||'?'}</td>
+                  <td>${stu?stu.firstName+' '+stu.lastName:'?'}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:11px">${b.dueDate}</td>
+                  <td><span class="badge badge-red">${days} days</span></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`:''}
+      <button class="btn-gold no-print" onclick="window.print()">🖨 Print Report</button>
+    </div>
+  `;
+}
+
+// ============================================================
+// STARTUP
+// ============================================================
+initAuth().catch(console.error);
+</script>
+</body>
+</html>
