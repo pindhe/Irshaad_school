@@ -1,0 +1,22 @@
+{
+  "name": "AL-irshaad Secondary School Management System (Offline)",
+  "short_name": "AL-irshaad School",
+  "description": "Offline-first client-side school management portal.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070b19",
+  "theme_color": "#070b19",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23070b19'/><rect x='36' y='36' width='120' height='120' rx='24' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236366f1'/><stop offset='1' stop-color='%238b5cf6'/></linearGradient></defs><text x='96' y='110' font-family='sans-serif' font-weight='black' font-size='42' fill='white' text-anchor='middle'>AI</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23070b19'/><rect x='96' y='96' width='320' height='320' rx='64' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236366f1'/><stop offset='1' stop-color='%238b5cf6'/></linearGradient></defs><text x='256' y='292' font-family='sans-serif' font-weight='black' font-size='110' fill='white' text-anchor='middle'>AI</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

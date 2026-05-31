@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL-irshaad School Management System (Offline)</title>
+    
+    <!-- Meta details for SEO & PWA -->
+    <meta name="description" content="Offline-first modern school management system for AL-irshaad Secondary School.">
+    <meta name="theme-color" content="#070b19">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#131c31',
+                            950: '#070b19',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom design styling -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#070b19] text-slate-100 min-h-screen overflow-x-hidden select-none">
+
+    <!-- Screen Preloader -->
+    <div id="app-preloader" class="fixed inset-0 bg-[#070b19] z-50 flex flex-col items-center justify-center transition-all duration-500">
+        <div class="relative flex items-center justify-center mb-6">
+            <!-- Ripple Pulse -->
+            <div class="absolute w-24 h-24 bg-indigo-500/10 rounded-full animate-ping duration-1500"></div>
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center font-bold text-2xl text-white shadow-xl shadow-indigo-500/30">
+                AI
+            </div>
+        </div>
+        <h2 class="text-xl font-extrabold tracking-wide bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent mb-1">
+            AL-irshaad Secondary School
+        </h2>
+        <p class="text-xs text-slate-400 font-medium mb-6">Offline-First Administration System</p>
+        
+        <div class="w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full animate-[loading_1.5s_infinite]"></div>
+        </div>
+        
+        <style>
+            @keyframes loading {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
+            }
+        </style>
+    </div>
+
+    <!-- Layout Container (populated by Router) -->
+    <div id="app-container"></div>
+
+    <!-- Core App Module Loader -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

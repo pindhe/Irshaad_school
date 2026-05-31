@@ -1,0 +1,102 @@
+/* AL-irshaad School Management System - Premium Stylesheet & Custom Utilities */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar for sleek UI */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.4);
+}
+
+/* Base custom animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Glowing details for cards */
+.glass-card {
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 10px 30px -15px rgba(99, 102, 241, 0.15);
+}
+
+/* Custom Print Stylesheet for Professional Report Cards */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        font-family: 'Times New Roman', serif;
+    }
+    
+    #app-shell aside,
+    #app-shell header,
+    #toast-container,
+    .no-print {
+        display: none !important;
+    }
+    
+    #app-shell {
+        display: block !important;
+        background: white !important;
+    }
+    
+    #app-content, main {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .print-card {
+        border: 2px solid #000 !important;
+        padding: 20px !important;
+        background: transparent !important;
+        color: #000 !important;
+        box-shadow: none !important;
+    }
+    
+    .print-table th {
+        background-color: #f3f4f6 !important;
+        color: black !important;
+        border: 1px solid #d1d5db !important;
+    }
+
+    .print-table td {
+        border: 1px solid #d1d5db !important;
+        color: black !important;
+    }
+}
